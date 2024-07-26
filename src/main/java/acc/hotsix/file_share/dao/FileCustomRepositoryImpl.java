@@ -21,7 +21,7 @@ import static acc.hotsix.file_share.domain.QFile.file;
 public class FileCustomRepositoryImpl implements FileCustomRepository{
     private final JPAQueryFactory queryFactory;
 
-    public List<FileQuerySearchResponseDTO> sortAllFiles (FileQueryRequestDTO fileQueryRequestDTO) {
+    public List<FileQuerySearchResponseDTO> sortAllFiles () {
         return queryFactory
                 .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.name, file.createdAt, file.fileType, file.path))
                 .from(file)

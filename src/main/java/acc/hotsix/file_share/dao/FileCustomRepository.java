@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public interface FileCustomRepository {
-    List<FileQuerySearchResponseDTO> sortAllFiles (FileQueryRequestDTO fileQueryRequestDTO);
+    List<FileQuerySearchResponseDTO> sortAllFiles ();
     Page<FileQuerySearchResponseDTO> sortFilesByNameAndDate(FileQueryRequestDTO fileQueryRequestDTO, Pageable pageable);
     Page<FileQuerySearchResponseDTO> searchFilesByCriteria(FileSearchRequestDTO fileSearchRequestDTO, Pageable pageable);
 }
