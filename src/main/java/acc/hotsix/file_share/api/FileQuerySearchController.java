@@ -7,6 +7,7 @@ import acc.hotsix.file_share.dto.FileSearchRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,6 +47,10 @@ public class FileQuerySearchController {
             @RequestParam(value = "type", required = false) String fileType,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer page
     ) {
+//        if(name == null && path == null && before == null && after == null && fileType == null) {
+//            throw new MissingSearchRequestParameterException();
+//        }
+
         FileSearchRequestDTO fileSearchRequestDTO = new FileSearchRequestDTO(name, path, before, after, fileType);
         Pageable pageable = PageRequest.of(page, 50);
         return this.fileQuerySearchService.searchFilesByCriteria(fileSearchRequestDTO, pageable).getContent();
