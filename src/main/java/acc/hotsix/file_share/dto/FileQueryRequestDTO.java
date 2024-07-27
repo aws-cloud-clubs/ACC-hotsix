@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileQueryRequestDTO {
-    private String nameSort;
-    private String createdAtSort;
+    private String name;
+    private String time;
 }

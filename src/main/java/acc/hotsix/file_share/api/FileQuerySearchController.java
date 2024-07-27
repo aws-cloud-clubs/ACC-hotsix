@@ -43,7 +43,7 @@ public class FileQuerySearchController {
             @RequestParam(value = "path", required = false) String path,
             @RequestParam(value = "before", required = false) LocalDate before,
             @RequestParam(value = "after", required = false) LocalDate after,
-            @RequestParam(value = "fileType", required = false) String fileType,
+            @RequestParam(value = "type", required = false) String fileType,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer page
     ) {
         FileSearchRequestDTO fileSearchRequestDTO = new FileSearchRequestDTO(name, path, before, after, fileType);

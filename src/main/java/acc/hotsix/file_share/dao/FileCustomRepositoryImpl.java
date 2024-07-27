@@ -21,7 +21,7 @@ import static acc.hotsix.file_share.domain.QFile.file;
 public class FileCustomRepositoryImpl implements FileCustomRepository{
     private final JPAQueryFactory queryFactory;
 
-    public List<FileQuerySearchResponseDTO> sortAllFiles () {
+    public List<FileQuerySearchResponseDTO> queryAllFile () {
         return queryFactory
                 .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.name, file.createdAt, file.fileType, file.path))
                 .from(file)
@@ -29,12 +29,12 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
                 .fetch();
     }
 
-    public Page<FileQuerySearchResponseDTO> sortFilesByNameAndDate(FileQueryRequestDTO fileQueryRequestDTO, Pageable pageable) {
+    public Page<FileQuerySearchResponseDTO> queryFilesByPage(FileQueryRequestDTO fileQueryRequestDTO, Pageable pageable) {
         List<FileQuerySearchResponseDTO> content = queryFactory
                 .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.name, file.createdAt, file.fileType, file.path))
                 .from(file)
-                .orderBy("desc".equals(fileQueryRequestDTO.getNameSort()) ? file.name.desc() : file.name.asc(),
-                        "desc".equals(fileQueryRequestDTO.getCreatedAtSort()) ? file.createdAt.desc() : file.createdAt.asc())
+                .orderBy("desc".equals(fileQueryRequestDTO.getName()) ? file.name.desc() : file.name.asc(),
+                        "desc".equals(fileQueryRequestDTO.getTime()) ? file.createdAt.desc() : file.createdAt.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -43,7 +43,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
                 .select(file.count())
                 .from(file);
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchOne());
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     public Page<FileQuerySearchResponseDTO> searchFilesByCriteria(FileSearchRequestDTO fileSearchRequestDTO, Pageable pageable) {
@@ -68,7 +68,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
                         createdAtGoe(fileSearchRequestDTO.getAfter()),
                         fileTypeEq(fileSearchRequestDTO.getFileType()));
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchOne());
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     private BooleanExpression nameContains(String name) {

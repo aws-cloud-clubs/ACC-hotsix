@@ -17,11 +17,11 @@ public class FileQuerySearchService {
     private final FileRepository fileRepository;
 
     public List<FileQuerySearchResponseDTO> queryAllFile() {
-        return this.fileRepository.sortAllFiles();
+        return this.fileRepository.queryAllFile();
     }
 
     public Page<FileQuerySearchResponseDTO> queryFilesByPage (FileQueryRequestDTO fileQueryRequestDTO, Pageable pageable) {
-        return this.fileRepository.sortFilesByNameAndDate(fileQueryRequestDTO, pageable);
+        return this.fileRepository.queryFilesByPage(fileQueryRequestDTO, pageable);
     }
 
     public Page<FileQuerySearchResponseDTO> searchFilesByCriteria (FileSearchRequestDTO fileSearchRequestDTO, Pageable pageable) {
