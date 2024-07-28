@@ -6,6 +6,6 @@ import acc.hotsix.file_share.domain.File;
 
 import java.util.List;
 
-public interface FileRepository extends JpaRepository<File, Long> {
+public interface FileRepository extends JpaRepository<File, Long>, FileCustomRepository {
     List<File> findByNameAndPath(String name, String path);
 }
