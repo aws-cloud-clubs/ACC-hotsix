@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileQuerySearchResponseDTO {
+    private Long fileId;
     private String name;
     private LocalDateTime createdAt;
     private String fileType;

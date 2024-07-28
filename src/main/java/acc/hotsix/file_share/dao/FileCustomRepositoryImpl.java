@@ -23,7 +23,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
 
     public List<FileQuerySearchResponseDTO> queryAllFile () {
         List<FileQuerySearchResponseDTO> content = queryFactory
-                .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.name, file.createdAt, file.fileType, file.path))
+                .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.fileId, file.name, file.createdAt, file.fileType, file.path))
                 .from(file)
                 .orderBy(file.name.asc(), file.createdAt.asc())
                 .fetch();
@@ -37,7 +37,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
 
     public Page<FileQuerySearchResponseDTO> queryFilesByPage(FileQueryRequestDTO fileQueryRequestDTO, Pageable pageable) {
         List<FileQuerySearchResponseDTO> content = queryFactory
-                .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.name, file.createdAt, file.fileType, file.path))
+                .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.fileId, file.name, file.createdAt, file.fileType, file.path))
                 .from(file)
                 .orderBy("desc".equals(fileQueryRequestDTO.getName()) ? file.name.desc() : file.name.asc(),
                         "desc".equals(fileQueryRequestDTO.getTime()) ? file.createdAt.desc() : file.createdAt.asc())
@@ -58,7 +58,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
 
     public Page<FileQuerySearchResponseDTO> searchFilesByCriteria(FileSearchRequestDTO fileSearchRequestDTO, Pageable pageable) {
         List<FileQuerySearchResponseDTO> content = queryFactory
-                .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.name, file.createdAt, file.fileType, file.path))
+                .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.fileId, file.name, file.createdAt, file.fileType, file.path))
                 .from(file)
                 .where(nameContains(fileSearchRequestDTO.getName()),
                         pathLike(fileSearchRequestDTO.getPath()),
