@@ -1,10 +1,7 @@
 package acc.hotsix.file_share.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,7 +11,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class File {
     @Id
@@ -43,9 +41,11 @@ public class File {
     @ColumnDefault("0")
     private Long view;
 
+    private boolean uploaded;
+
     @Builder
 
-    public File(Long fileId, String name, LocalDateTime createdAt, String resource, String fileType, Double fileSize, String path, LocalDateTime lastModifiedAt, Long download, Long view) {
+    public File(Long fileId, String name, LocalDateTime createdAt, String resource, String fileType, Double fileSize, String path, LocalDateTime lastModifiedAt, Long download, Long view, boolean uploaded) {
         this.fileId = fileId;
         this.name = name;
         this.createdAt = createdAt;
@@ -56,5 +56,6 @@ public class File {
         this.lastModifiedAt = lastModifiedAt;
         this.download = download;
         this.view = view;
+        this.uploaded = uploaded;
     }
 }
