@@ -37,6 +37,8 @@ public class QFile extends EntityPathBase<File> {
 
     public final StringPath resource = createString("resource");
 
+    public final BooleanPath uploaded = createBoolean("uploaded");
+
     public final NumberPath<Long> view = createNumber("view", Long.class);
 
     public QFile(String variable) {
