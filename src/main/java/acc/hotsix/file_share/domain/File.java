@@ -43,9 +43,13 @@ public class File {
 
     private boolean uploaded;
 
+    private String password;
+
+    private String link;
+
     @Builder
 
-    public File(Long fileId, String name, LocalDateTime createdAt, String resource, String fileType, Double fileSize, String path, LocalDateTime lastModifiedAt, Long download, Long view, boolean uploaded) {
+    public File(Long fileId, String name, LocalDateTime createdAt, String resource, String fileType, Double fileSize, String path, LocalDateTime lastModifiedAt, Long download, Long view, boolean uploaded, String password, String link) {
         this.fileId = fileId;
         this.name = name;
         this.createdAt = createdAt;
@@ -57,5 +61,7 @@ public class File {
         this.download = download;
         this.view = view;
         this.uploaded = uploaded;
+        this.password = password;
+        this.link = link;
     }
 }
