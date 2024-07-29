@@ -1,8 +1,10 @@
 package acc.hotsix.file_share.api;
 
+import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.application.FileUpdateService;
 import acc.hotsix.file_share.dto.UpdateFilePatchReq;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class FileUpdateController {
     private final FileUpdateService fileUpdateService;
+    private final FileService fileService;
 
     Map<String, Object> resultMap;
 
@@ -30,6 +33,12 @@ public class FileUpdateController {
 
         MultipartFile file = req.getFile();
         String directory = req.getDirectory();
+        String password = req.getPassword();
+
+        if (!fileService.validateFileAccess(Long.parseLong(fileId), password)) {
+            resultMap.put("error", "Access denied: invalid password");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
+        }
 
         try {
             fileUpdateService.updateFile(fileId, directory, file);

@@ -13,4 +13,6 @@ public interface FileService {
     void removeFileMetaData(File file);
 
     List<File> getSameNameAndPathFileList(String name, String directory);
+
+    boolean validateFileAccess(Long fileId, String password);
 }

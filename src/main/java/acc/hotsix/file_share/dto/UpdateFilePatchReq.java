@@ -13,4 +13,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class UpdateFilePatchReq {
     private String directory;
     private MultipartFile file;
+    private String password;
 }

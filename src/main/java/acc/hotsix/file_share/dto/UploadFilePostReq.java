@@ -13,4 +13,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class UploadFilePostReq {
     private MultipartFile file;
     private String directory;
+    private String password;
 }

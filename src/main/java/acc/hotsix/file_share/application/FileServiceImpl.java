@@ -39,4 +39,9 @@ public class FileServiceImpl implements FileService {
     public List<File> getSameNameAndPathFileList(String name, String directory) {
         return fileRepository.findByNameAndPath(name, directory);
     }
+
+    // file_id와 password가 일치하는지 확인
+    public boolean validateFileAccess(Long fileId, String password) {
+        return (fileRepository.findByFileIdAndPassword(fileId, password) != null);
+    }
 }

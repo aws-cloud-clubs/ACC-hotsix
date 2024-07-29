@@ -59,7 +59,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     // 파일 업로드 프로세스
-    public void uploadFile(MultipartFile file, String directory) throws UploadFileException, FileDuplicateException {
+    public void uploadFile(MultipartFile file, String directory, String password) throws UploadFileException, FileDuplicateException {
         List<File> duplicateFiles = fileService.getSameNameAndPathFileList(file.getOriginalFilename(), directory);
         if (duplicateFiles.size() > 0) {    // 중복 파일 처리
             throw new FileDuplicateException("File duplicate.");
@@ -79,6 +79,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 .path(directory)
                 .download(0L)
                 .view(0L)
+                .password(password)
                 .build();
 
         // 메타데이터 저장

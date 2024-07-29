@@ -24,9 +24,10 @@ public class FileUploadController {
 
         MultipartFile file = req.getFile();
         String directory = req.getDirectory();
+        String password = req.getPassword();
 
         try {
-            fileUploadService.uploadFile(file, directory);
+            fileUploadService.uploadFile(file, directory, password);
             resultMap.put("message", "File uploaded successfully");
             return ResponseEntity.ok(resultMap);
         } catch (Exception e) {     // TODO 에러 처리 추후 진행

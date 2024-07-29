@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface FileRepository extends JpaRepository<File, Long>, FileCustomRepository {
     List<File> findByNameAndPath(String name, String path);
+
+    File findByFileIdAndPassword(Long fileId, String password);
 }
