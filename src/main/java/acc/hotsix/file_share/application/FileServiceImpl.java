@@ -4,6 +4,7 @@ import acc.hotsix.file_share.dao.FileRepository;
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.global.error.FileNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
     private final FileRepository fileRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     // ID를 통한 파일 메타데이터 조회
     public File getFileById(Long fileId) throws FileNotFoundException {
@@ -40,8 +43,9 @@ public class FileServiceImpl implements FileService {
         return fileRepository.findByNameAndPath(name, directory);
     }
 
-    // file_id와 password가 일치하는지 확인
-    public boolean validateFileAccess(Long fileId, String password) {
-        return (fileRepository.findByFileIdAndPassword(fileId, password) != null);
+    // password 검증
+    public boolean validateFileAccess(Long fileId, String password) throws FileNotFoundException {
+        File file = getFileById(fileId);
+        return passwordEncoder.matches(password, file.getPassword());
     }
 }

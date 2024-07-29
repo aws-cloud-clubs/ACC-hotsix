@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,8 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final AmazonS3Client amazonS3Client;
 
     private final FileService fileService;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -79,7 +82,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 .path(directory)
                 .download(0L)
                 .view(0L)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .build();
 
         // 메타데이터 저장

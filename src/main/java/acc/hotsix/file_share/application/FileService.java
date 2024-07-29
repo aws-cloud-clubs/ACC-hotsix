@@ -14,5 +14,5 @@ public interface FileService {
 
     List<File> getSameNameAndPathFileList(String name, String directory);
 
-    boolean validateFileAccess(Long fileId, String password);
+    boolean validateFileAccess(Long fileId, String password) throws FileNotFoundException;
 }

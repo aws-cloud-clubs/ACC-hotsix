@@ -35,12 +35,14 @@ public class FileUpdateController {
         String directory = req.getDirectory();
         String password = req.getPassword();
 
-        if (!fileService.validateFileAccess(Long.parseLong(fileId), password)) {
-            resultMap.put("error", "Access denied: invalid password");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
-        }
-
         try {
+            // 비밀번호를 이용한 파일 접근 권한 확인
+            if (!fileService.validateFileAccess(Long.parseLong(fileId), password)) {
+                resultMap.put("error", "Access denied: invalid password");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
+            }
+
+            // 파일 업데이트
             fileUpdateService.updateFile(fileId, directory, file);
             resultMap.put("message", "File updated successfully");
             return ResponseEntity.ok(resultMap);
