@@ -16,6 +16,11 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "file", indexes = {
+        @Index(name = "idx_path", columnList = "path"),
+        @Index(name = "idx_created_at", columnList = "created_at"),
+        @Index(name = "idx_file_type", columnList = "file_type")
+})
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

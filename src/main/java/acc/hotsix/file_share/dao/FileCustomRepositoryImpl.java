@@ -5,6 +5,8 @@ import acc.hotsix.file_share.dto.FileQuerySearchResponseDTO;
 import acc.hotsix.file_share.dto.FileSearchRequestDTO;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +63,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
                 .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.fileId, file.name, file.createdAt, file.fileType, file.path))
                 .from(file)
                 .where(nameContains(fileSearchRequestDTO.getName()),
-                        pathLike(fileSearchRequestDTO.getPath()),
+                        pathEq(fileSearchRequestDTO.getPath()),
                         createdAtLoe(fileSearchRequestDTO.getBefore()),
                         createdAtGoe(fileSearchRequestDTO.getAfter()),
                         fileTypeEq(fileSearchRequestDTO.getFileType()))
@@ -77,7 +79,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
                 .select(file.count())
                 .from(file)
                 .where(nameContains(fileSearchRequestDTO.getName()),
-                        pathLike(fileSearchRequestDTO.getPath()),
+                        pathEq(fileSearchRequestDTO.getPath()),
                         createdAtLoe(fileSearchRequestDTO.getBefore()),
                         createdAtGoe(fileSearchRequestDTO.getAfter()),
                         fileTypeEq(fileSearchRequestDTO.getFileType()));
@@ -86,11 +88,14 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
     }
 
     private BooleanExpression nameContains(String name) {
-        return (name != null) ? file.name.contains(name) : null;
+        NumberTemplate<Double> nameContainsFullText = Expressions.numberTemplate(Double.class,
+                "function('match_against', {0}, {1})", file.name, "\"" +name + "\"");
+
+        return (name != null) ? nameContainsFullText.gt(0) : null;
     }
 
-    private BooleanExpression pathLike(String path) {
-        return (path != null) ? file.path.like("%" + path) : null;
+    private BooleanExpression pathEq(String path) {
+        return (path != null) ? file.path.eq(path) : null;
     }
 
     private BooleanExpression createdAtLoe(LocalDate before) {
