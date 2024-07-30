@@ -31,11 +31,17 @@ public class QFile extends EntityPathBase<File> {
 
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = createDateTime("lastModifiedAt", java.time.LocalDateTime.class);
 
+    public final StringPath link = createString("link");
+
     public final StringPath name = createString("name");
+
+    public final StringPath password = createString("password");
 
     public final StringPath path = createString("path");
 
     public final StringPath resource = createString("resource");
+
+    public final BooleanPath uploaded = createBoolean("uploaded");
 
     public final NumberPath<Long> view = createNumber("view", Long.class);
 

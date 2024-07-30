@@ -1,7 +1,13 @@
 package acc.hotsix.file_share.dao;
 
-import acc.hotsix.file_share.domain.File;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FileRepository extends JpaRepository<File, Long>,  FileCustomRepository{
+import acc.hotsix.file_share.domain.File;
+
+import java.util.List;
+
+public interface FileRepository extends JpaRepository<File, Long>, FileCustomRepository {
+    List<File> findByNameAndPath(String name, String path);
+
+    File findByFileIdAndPassword(Long fileId, String password);
 }
