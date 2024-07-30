@@ -3,9 +3,12 @@ package acc.hotsix.file_share.api;
 import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.application.FileUpdateService;
 import acc.hotsix.file_share.dto.UpdateFilePatchReq;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +30,16 @@ public class FileUpdateController {
     @PatchMapping("/files/{file_id}")
     public ResponseEntity<Map<String, Object>> handleFileUpdate(
             @PathVariable("file_id") String fileId,
-            @ModelAttribute UpdateFilePatchReq req
+            @Valid @ModelAttribute UpdateFilePatchReq req, BindingResult bindingResult
             ) {
         resultMap = new HashMap<>();
+
+        if (bindingResult.hasErrors()) {
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                resultMap.put(error.getField(), error.getDefaultMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);   // TODO 에러 처리 추후 수정 예정
+            }
+        }
 
         MultipartFile file = req.getFile();
         String directory = req.getDirectory();
