@@ -2,6 +2,7 @@ package acc.hotsix.file_share.application;
 
 import acc.hotsix.file_share.dao.FileRepository;
 import acc.hotsix.file_share.domain.File;
+import acc.hotsix.file_share.dto.FileMetadataResponseDto;
 import acc.hotsix.file_share.global.error.FileNotFoundException;
 import acc.hotsix.file_share.global.error.InvalidShareLinkException;
 import lombok.RequiredArgsConstructor;
@@ -68,5 +69,14 @@ public class FileServiceImpl implements FileService {
             throw new InvalidShareLinkException();
         }
         return file.getResource();
+    }
+
+    // 파일 상세 조회
+    public FileMetadataResponseDto getMetadataById(Long fileId) {
+        File file = null; // TODO 공통 예외처리 도입 시 제거 예정
+        try {
+            file = getFileById(fileId);
+        } catch (FileNotFoundException e) {}
+        return FileMetadataResponseDto.toFileResponseDto(file);
     }
 }
