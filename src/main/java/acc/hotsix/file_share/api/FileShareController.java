@@ -2,9 +2,7 @@ package acc.hotsix.file_share.api;
 
 import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.application.FileShareService;
-import acc.hotsix.file_share.application.FileUpdateService;
 import acc.hotsix.file_share.dto.FileSharePostReq;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,13 +49,14 @@ public class FileShareController {
             resultMap.put("link", link);
 
             return ResponseEntity.ok(resultMap);
-        } catch (Exception e) {
-            return null;
         }
-//        catch (FileNotFoundException e) {
+//        catch (FileNotFoundException e) {    // TODO 에러 처리 추후 진행
 //            resultMap.put("error", e.getMessage());
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
 //        }
+        catch (Exception e) {
+            return null;
+        }
 
     }
 }

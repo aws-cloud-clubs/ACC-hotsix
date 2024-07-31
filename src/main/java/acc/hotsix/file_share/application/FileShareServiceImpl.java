@@ -3,16 +3,13 @@ package acc.hotsix.file_share.application;
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.global.error.FileNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Formatter;
 import java.util.HashMap;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +21,11 @@ public class FileShareServiceImpl implements FileShareService {
     // 짧은 URL 생성
     public String generateShareLink(Long fileId) throws FileNotFoundException, NoSuchAlgorithmException {
         File fileMetaData = fileService.getFileById(fileId);
+
+        // 이미 공유 링크가 존재하는 경우
+        if (fileMetaData.getLink() != null) {
+            return fileMetaData.getLink();
+        }
 
         HashMap<String, String> urlMap = fileService.getAllUrlMap();
 
