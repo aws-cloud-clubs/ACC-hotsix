@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,5 +48,16 @@ public class FileServiceImpl implements FileService {
     public boolean validateFileAccess(Long fileId, String password) throws FileNotFoundException {
         File file = getFileById(fileId);
         return passwordEncoder.matches(password, file.getPassword());
+    }
+
+    public HashMap getAllUrlMap() {
+        List<File> fileList = fileRepository.findAll();
+        HashMap<String, String> urlMap = new HashMap<>();
+
+        for (File file : fileList) {
+            urlMap.put(String.valueOf(file.getFileId()), file.getResource());
+        }
+
+        return urlMap;
     }
 }
