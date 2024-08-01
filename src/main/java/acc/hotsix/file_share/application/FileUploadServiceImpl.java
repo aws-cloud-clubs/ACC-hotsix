@@ -54,9 +54,9 @@ public class FileUploadServiceImpl implements FileUploadService {
             return amazonS3Client.getUrl(bucketName, key).toString();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new UploadFileException("Upload interrupted: " + e.getMessage());
+            throw new UploadFileException();
         } catch (IOException e) {
-            throw new UploadFileException("Upload failed: " + e.getMessage());
+            throw new UploadFileException();
         } finally {
             tm.shutdownNow(false);
         }
@@ -107,7 +107,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             fileService.saveMetaData(savedFile);
         } catch (Exception e) {
             fileService.removeFileMetaData(savedFile);
-            throw new UploadFileException("파일 업로드 실패");
+            throw new UploadFileException();
         }
     }
 }
