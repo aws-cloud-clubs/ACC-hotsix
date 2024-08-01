@@ -3,10 +3,12 @@ package acc.hotsix.file_share.application;
 import acc.hotsix.file_share.dao.FileRepository;
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.global.error.FileNotFoundException;
+import acc.hotsix.file_share.global.error.InvalidShareLinkException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,5 +49,24 @@ public class FileServiceImpl implements FileService {
     public boolean validateFileAccess(Long fileId, String password) throws FileNotFoundException {
         File file = getFileById(fileId);
         return passwordEncoder.matches(password, file.getPassword());
+    }
+
+    public HashMap getAllUrlMap() {
+        List<File> fileList = fileRepository.findAll();
+        HashMap<String, String> urlMap = new HashMap<>();
+
+        for (File file : fileList) {
+            urlMap.put(String.valueOf(file.getFileId()), file.getResource());
+        }
+
+        return urlMap;
+    }
+
+    public String getResourceByLink(String link) throws InvalidShareLinkException {
+        File file = fileRepository.findByLink(link);
+        if (file == null) {
+            throw new InvalidShareLinkException("This link is invalid.");
+        }
+        return file.getResource();
     }
 }
