@@ -13,4 +13,5 @@ public interface FileCustomRepository {
     List<FileQuerySearchResponseDTO> queryAllFile();
     Page<FileQuerySearchResponseDTO> queryFilesByPage(FileQueryRequestDTO fileQueryRequestDTO, Pageable pageable);
     Page<FileQuerySearchResponseDTO> searchFilesByCriteria(FileSearchRequestDTO fileSearchRequestDTO, Pageable pageable);
+    String findNameById(Long fileId);
 }

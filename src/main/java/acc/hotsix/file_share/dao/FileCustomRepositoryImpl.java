@@ -73,6 +73,14 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
+    public String findNameById(Long fileId) {
+        return queryFactory
+                .select(file.name)
+                .from(file)
+                .where(file.fileId.eq(fileId))
+                .fetchOne();
+    }
+
     private BooleanExpression nameContains(String name) {
         NumberTemplate<Double> nameContainsFullText = Expressions.numberTemplate(Double.class,
                 "function('match_against', {0}, {1})", file.name, "\"" +name + "\"");
