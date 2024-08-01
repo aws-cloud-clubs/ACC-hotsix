@@ -33,7 +33,7 @@ public class FileUpdateServiceImpl implements FileUpdateService {
             fileType = file.getContentType();
         }
         if (!fileType.equals(fileMetaData.getFileType())) {
-            throw new FileTypeMismatchException("File Type Mismatch");
+            throw new FileTypeMismatchException(file.getOriginalFilename(), fileMetaData.getFileType(), fileType);
         }
 
         List<File> duplicateFiles = fileService.getSameNameAndPathFileList(file.getOriginalFilename(), newDirectory);
