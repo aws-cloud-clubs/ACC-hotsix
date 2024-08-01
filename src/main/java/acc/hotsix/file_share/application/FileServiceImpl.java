@@ -8,6 +8,7 @@ import acc.hotsix.file_share.global.error.InvalidShareLinkException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +73,10 @@ public class FileServiceImpl implements FileService {
     }
 
     // 파일 상세 조회
+    @Transactional
     public FileMetadataResponseDto getMetadataById(Long fileId) {
         File file = fileRepository.findById(fileId).get();
+        file.updateViewCount();
         return FileMetadataResponseDto.toFileResponseDto(file);
     }
 }
