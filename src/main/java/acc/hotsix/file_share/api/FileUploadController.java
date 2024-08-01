@@ -2,6 +2,8 @@ package acc.hotsix.file_share.api;
 
 import acc.hotsix.file_share.application.FileUploadService;
 import acc.hotsix.file_share.dto.UploadFilePostReq;
+import acc.hotsix.file_share.global.error.FileDuplicateException;
+import acc.hotsix.file_share.global.error.UploadFileException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,18 +43,15 @@ public class FileUploadController {
             fileUploadService.uploadFile(file, directory, password);
             resultMap.put("message", "File uploaded successfully");
             return ResponseEntity.ok(resultMap);
-        } catch (Exception e) {     // TODO 에러 처리 추후 진행
-            return null;
+        } catch (UploadFileException e) {
+            resultMap.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
+        } catch (FileDuplicateException e) {
+            resultMap.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
+        } catch (Exception e) {
+            resultMap.put("error", "An unexpected error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
         }
-//        catch (UploadFileException e) {
-//            resultMap.put("error", "File upload failed: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
-//        } catch (FileDuplicateException e) {
-//            resultMap.put("error", "File Duplicated: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
-//        } catch (Exception e) {
-//            resultMap.put("error", "An unexpected error occurred: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
-//        }
     }
 }

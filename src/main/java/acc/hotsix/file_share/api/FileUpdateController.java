@@ -3,6 +3,9 @@ package acc.hotsix.file_share.api;
 import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.application.FileUpdateService;
 import acc.hotsix.file_share.dto.UpdateFilePatchReq;
+import acc.hotsix.file_share.global.error.FileNotFoundException;
+import acc.hotsix.file_share.global.error.FileTypeMismatchException;
+import acc.hotsix.file_share.global.error.UploadFileException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,21 +59,18 @@ public class FileUpdateController {
             fileUpdateService.updateFile(fileId, directory, file);
             resultMap.put("message", "File updated successfully");
             return ResponseEntity.ok(resultMap);
-        } catch (Exception e) {     // TODO 에러 처리 추후 진행
-            return null;
+        } catch (FileNotFoundException e) {
+            resultMap.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
+        } catch (UploadFileException e) {
+            resultMap.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
+        } catch (FileTypeMismatchException e) {
+            resultMap.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
+        } catch (Exception e) {
+            resultMap.put("error", "An unexpected error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
         }
-//        catch (FileNotFoundException e) {
-//            resultMap.put("error", e.getMessage());
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
-//        } catch (UploadFileException e) {
-//            resultMap.put("error", "File update failed: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
-//        } catch (FileTypeMismatchException e) {
-//            resultMap.put("error", "File type mismatch: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
-//        } catch (Exception e) {
-//            resultMap.put("error", "An unexpected error occurred: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
-//        }
     }
 }

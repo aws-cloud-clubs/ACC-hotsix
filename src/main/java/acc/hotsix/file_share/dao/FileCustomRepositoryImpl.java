@@ -23,21 +23,15 @@ import static acc.hotsix.file_share.domain.QFile.file;
 public class FileCustomRepositoryImpl implements FileCustomRepository{
     private final JPAQueryFactory queryFactory;
 
-    public List<FileQuerySearchResponseDTO> queryAllFile () {
-        List<FileQuerySearchResponseDTO> content = queryFactory
+    public List<FileQuerySearchResponseDTO> queryAllFile(){
+        return queryFactory
                 .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.fileId, file.name, file.createdAt, file.fileType, file.path))
                 .from(file)
                 .orderBy(file.name.asc(), file.createdAt.asc())
                 .fetch();
-
-//        if(content == null){
-//            throw new NoQueryFilesException();
-//        }
-
-        return content;
     }
 
-    public Page<FileQuerySearchResponseDTO> queryFilesByPage(FileQueryRequestDTO fileQueryRequestDTO, Pageable pageable) {
+    public Page<FileQuerySearchResponseDTO> queryFilesByPage(FileQueryRequestDTO fileQueryRequestDTO, Pageable pageable){
         List<FileQuerySearchResponseDTO> content = queryFactory
                 .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.fileId, file.name, file.createdAt, file.fileType, file.path))
                 .from(file)
@@ -47,10 +41,6 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
                 .limit(pageable.getPageSize())
                 .fetch();
 
-//        if(content == null){
-//            throw new NoQueryFilesException();
-//        }
-
         JPAQuery<Long> countQuery = queryFactory
                 .select(file.count())
                 .from(file);
@@ -58,7 +48,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    public Page<FileQuerySearchResponseDTO> searchFilesByCriteria(FileSearchRequestDTO fileSearchRequestDTO, Pageable pageable) {
+    public Page<FileQuerySearchResponseDTO> searchFilesByCriteria(FileSearchRequestDTO fileSearchRequestDTO, Pageable pageable){
         List<FileQuerySearchResponseDTO> content = queryFactory
                 .select(Projections.constructor(FileQuerySearchResponseDTO.class, file.fileId, file.name, file.createdAt, file.fileType, file.path))
                 .from(file)
@@ -70,10 +60,6 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
-//        if(content == null){
-//            throw new NoQueryFilesException();
-//        }
 
         JPAQuery<Long> countQuery = queryFactory
                 .select(file.count())

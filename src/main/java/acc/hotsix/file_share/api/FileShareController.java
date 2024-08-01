@@ -3,6 +3,7 @@ package acc.hotsix.file_share.api;
 import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.application.FileShareService;
 import acc.hotsix.file_share.dto.FileSharePostReq;
+import acc.hotsix.file_share.global.error.FileNotFoundException;
 import acc.hotsix.file_share.global.error.InvalidShareLinkException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -49,13 +50,12 @@ public class FileShareController {
             resultMap.put("link", link);
 
             return ResponseEntity.ok(resultMap);
-        }
-//        catch (FileNotFoundException e) {    // TODO 에러 처리 추후 진행
-//            resultMap.put("error", e.getMessage());
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
-//        }
-        catch (Exception e) {
-            return null;
+        } catch (FileNotFoundException e) {
+            resultMap.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
+        } catch (Exception e) {
+            resultMap.put("error", "An unexpected error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
         }
 
     }
@@ -73,14 +73,12 @@ public class FileShareController {
             System.out.println("controller resource "  + resource);
 
             return ResponseEntity.status(HttpStatus.FOUND).headers(httpHeaders).build();
-        }
-//        catch (InvalidShareLinkException e) {     // TODO 에러 처리 추후 진행
-//            resultMap.put("error", e.getMessage());
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
-//        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        } catch (InvalidShareLinkException e) {  
+            resultMap.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
+        } catch (Exception e) {
+            resultMap.put("error", "An unexpected error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
         }
     }
 }

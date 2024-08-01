@@ -65,7 +65,7 @@ public class FileServiceImpl implements FileService {
     public String getResourceByLink(String link) throws InvalidShareLinkException {
         File file = fileRepository.findByLink(link);
         if (file == null) {
-            throw new InvalidShareLinkException("This link is invalid.");
+            throw new InvalidShareLinkException();
         }
         return file.getResource();
     }

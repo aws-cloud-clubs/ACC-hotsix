@@ -15,11 +15,7 @@ public class FileDeleteService {
     private final AmazonS3Client amazonS3Client;
 
     public void deleteFile(Long fileId) {
-        try {
-            amazonS3Client.deleteObject(bucketName, fileId.toString());
-            fileRepository.deleteById(fileId);
-        } catch (Exception e) {
-            // TODO 에러 처리 추후 수정 예정
-        }
+        amazonS3Client.deleteObject(bucketName, fileId.toString());
+        fileRepository.deleteById(fileId);
     }
 }
