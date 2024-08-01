@@ -7,6 +7,7 @@ import acc.hotsix.file_share.global.error.FileTypeMismatchException;
 import acc.hotsix.file_share.global.error.UploadFileException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -27,7 +28,11 @@ public class FileUpdateServiceImpl implements FileUpdateService {
         File fileMetaData = fileService.getFileById(Long.parseLong(fileId));
 
         // 파일 타입 동일 여부 확인
-        if (!file.getContentType().equals(fileMetaData.getFileType())) {
+        String fileType = StringUtils.getFilenameExtension(file.getOriginalFilename());
+        if (fileType == null) {
+            fileType = file.getContentType();
+        }
+        if (!fileType.equals(fileMetaData.getFileType())) {
             throw new FileTypeMismatchException("File Type Mismatch");
         }
 

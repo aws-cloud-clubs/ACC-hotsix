@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -72,10 +73,16 @@ public class FileUploadServiceImpl implements FileUploadService {
         double sizeInMegabytes = file.getSize() / (1024.0 * 1024.0);
         BigDecimal sizeRounded = new BigDecimal(sizeInMegabytes).setScale(2, RoundingMode.HALF_UP);
 
+        // 파일 메타 데이터 - 파일 타입
+        String fileType = StringUtils.getFilenameExtension(file.getOriginalFilename());
+        if (fileType == null) {
+            fileType = file.getContentType();
+        }
+
         // 파일 메타데이터 생성
         File fileMetaData = File.builder()
                 .name(file.getOriginalFilename())
-                .fileType(file.getContentType())
+                .fileType( fileType)
                 .lastModifiedAt(LocalDateTime.now())
                 .fileSize(sizeRounded.doubleValue())
                 .createdAt(LocalDateTime.now())
