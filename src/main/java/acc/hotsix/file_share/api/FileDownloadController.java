@@ -4,6 +4,7 @@ import acc.hotsix.file_share.application.FileDownloadService;
 import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.dto.FileDownloadDto;
 import acc.hotsix.file_share.dto.FileMetadataResponseDto;
+import acc.hotsix.file_share.global.error.FileNotFoundException;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,26 +27,22 @@ public class FileDownloadController {
 
     // 파일 상세 조회 (메타데이터)
     @GetMapping("/{file-id}")
-    public ResponseEntity<FileMetadataResponseDto> getFileMetadata(@PathVariable("file-id") Long fileId,
-                                                                   @NotEmpty @RequestParam("password") String password) {
-        try {
-            fileService.validateFileAccess(fileId, password);
-        } catch (Exception e) {
-            // TODO 파일 접근 권한 없음 예외처리
-        }
+    public ResponseEntity getFileMetadata(@PathVariable("file-id") Long fileId,
+                                          @NotEmpty @RequestParam("password") String password) {
+        ResponseEntity<HashMap> FORBIDDEN = isPasswordValid(fileId, password);
+        if (FORBIDDEN != null) return FORBIDDEN;
+
         FileMetadataResponseDto responseDto = fileService.getMetadataById(fileId);
         return ResponseEntity.ok().body(responseDto);
     }
 
     // 파일 다운로드
     @GetMapping("/{file-id}/download")
-    public ResponseEntity<byte[]> downloadFile(@PathVariable("file-id") Long fileId,
-                                                 @NotEmpty @RequestParam("password") String password) throws IOException {
-        try {
-            fileService.validateFileAccess(fileId, password);
-        } catch (Exception e) {
-            // TODO 파일 접근 권한 없음 예외처리
-        }
+    public ResponseEntity downloadFile(@PathVariable("file-id") Long fileId,
+                                       @NotEmpty @RequestParam("password") String password) throws IOException {
+        ResponseEntity<HashMap> FORBIDDEN = isPasswordValid(fileId, password);
+        if (FORBIDDEN != null) return FORBIDDEN;
+
         FileDownloadDto downloadDto = fileDownloadService.downloadFile(fileId);
 
         byte[] content = downloadDto.getInputStream().readAllBytes();
@@ -57,4 +55,18 @@ public class FileDownloadController {
         return new ResponseEntity<>(content, headers, HttpStatus.OK);
     }
 
+    private ResponseEntity<HashMap> isPasswordValid(Long fileId, String password) {
+        try {
+            if (!fileService.validateFileAccess(fileId, password)) {
+                HashMap resultMap = new HashMap<>();
+                resultMap.put("error", "Access denied: invalid password");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
+            }
+        } catch (FileNotFoundException e) {
+            HashMap resultMap = new HashMap<>();
+            resultMap.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
+        }
+        return null;
+    }
 }

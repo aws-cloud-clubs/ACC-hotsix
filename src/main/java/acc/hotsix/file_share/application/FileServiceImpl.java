@@ -73,10 +73,7 @@ public class FileServiceImpl implements FileService {
 
     // 파일 상세 조회
     public FileMetadataResponseDto getMetadataById(Long fileId) {
-        File file = null; // TODO 공통 예외처리 도입 시 제거 예정
-        try {
-            file = getFileById(fileId);
-        } catch (FileNotFoundException e) {}
+        File file = fileRepository.findById(fileId).get();
         return FileMetadataResponseDto.toFileResponseDto(file);
     }
 }
