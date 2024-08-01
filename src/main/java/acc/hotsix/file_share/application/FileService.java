@@ -2,6 +2,7 @@ package acc.hotsix.file_share.application;
 
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.global.error.FileNotFoundException;
+import acc.hotsix.file_share.global.error.InvalidShareLinkException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,4 +19,6 @@ public interface FileService {
     boolean validateFileAccess(Long fileId, String password) throws FileNotFoundException;
 
     HashMap getAllUrlMap();
+
+    String getResourceByLink(String link) throws InvalidShareLinkException;
 }
