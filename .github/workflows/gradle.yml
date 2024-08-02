@@ -25,7 +25,7 @@ jobs:
         
       ## gradle caching
       - name: Gradle Caching
-        uses: actions/cache@v
+        uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
