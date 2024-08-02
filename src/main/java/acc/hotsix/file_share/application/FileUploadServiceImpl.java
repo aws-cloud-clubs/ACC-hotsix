@@ -1,5 +1,7 @@
 package acc.hotsix.file_share.application;
 
+import acc.hotsix.file_share.dao.LogRepository;
+import acc.hotsix.file_share.domain.Log;
 import acc.hotsix.file_share.global.error.FileDuplicateException;
 import acc.hotsix.file_share.global.error.UploadFileException;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +33,8 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final FileService fileService;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final LogRepository logRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -63,6 +68,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     // 파일 업로드 프로세스
+    @Transactional
     public void uploadFile(MultipartFile file, String directory, String password) throws UploadFileException, FileDuplicateException {
         List<File> duplicateFiles = fileService.getSameNameAndPathFileList(file.getOriginalFilename(), directory);
         if (duplicateFiles.size() > 0) {    // 중복 파일 처리
@@ -109,5 +115,13 @@ public class FileUploadServiceImpl implements FileUploadService {
             fileService.removeFileMetaData(savedFile);
             throw new UploadFileException();
         }
+
+        // 파일 등록 로그 생성
+        Log log = Log.builder()
+                .file(savedFile)
+                .type(Log.Type.CREATE)
+                .build();
+
+        logRepository.save(log);
     }
 }

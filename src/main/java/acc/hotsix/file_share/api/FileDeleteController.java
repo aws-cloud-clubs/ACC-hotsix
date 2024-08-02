@@ -22,7 +22,7 @@ public class FileDeleteController {
     private final FileService fileService;
     private final FileDeleteService fileDeleteService;
 
-    @PostMapping("/files/delete/{id}")
+    @PostMapping("/files/{id}/delete")
     public ResponseEntity<Map<String, Object>> deleteFile(
             @PathVariable("id")Long fileId,
             @Valid @ModelAttribute DeleteFileReq req, BindingResult bindingResult
