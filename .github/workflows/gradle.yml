@@ -5,8 +5,6 @@ name: ACC-hotsix CI/CD
 on:
   push:
     branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
 
 permissions:
   contents: read
@@ -21,7 +19,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin' # https://github.com/actions/setup-java
+          distribution: 'temurin'
         
       ## gradle caching
       - name: Gradle Caching
@@ -38,43 +36,42 @@ jobs:
         run: 
           chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build -x test
-        shell: bash
-      
       ## create application-prod.yml
-      - name: create application-prod.yml
-        if: contains(github.ref, 'develop')
+      - name: create application.yml
         run: |
           cd ./src/main
           cd ./resources
           touch ./application.yml
           ls *
           echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
-        shell: bash
-      
+
+      - name: Build with Gradle
+        run: ./gradlew build -x test
+
       ## docker build & push to production
-      - name: Docker build & push to prod
-        if: contains(github.ref, 'develop')
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-          docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }} .
-          docker push ${{ secrets.DOCKER_REPO }}
+      - name: Build Docker image
+        run: docker build --tag acchotsix/acc-hotsix:latest .
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push image to DockerHub
+        run: docker push acchotsix/acc-hotsix:latest
             
       ## deploy to production
-      - name: Deploy to prod
-        uses: appleboy/ssh-action@v0.1.6
-        id: deploy-prod
-        if: contains(github.ref, 'develop')
+      - name: Configure AWS IAM credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          host: ${{ secrets.EC2_HOST_PROD }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          port: 22
-          envs: GITHUB_SHA
-          script: |
-              echo test1234 > test.txt
-              sudo docker rm -f $(docker ps -qa)
-              sudo docker pull ${{ secrets.DOCKER_REPO }}
-              docker-compose up -d
-              docker image prune -f
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Start CodeDeploy Agent
+        run: >
+          aws deploy create-deployment --application-name hotsix
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name deploy-group
+          --s3-location bucket=acc6-s3-dev-an2,bundleType=zip,key=hotsix.zip
