@@ -39,6 +39,3 @@ public class Log {
         this.file = file;
     }
 }
-
-// file 생성(완), 조회(완), 업데이트(완), 다운로드(완) 시 Log 생성해야 함.
-// log 조회 -> file id 별, type 별
