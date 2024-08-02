@@ -53,7 +53,6 @@ public class File {
     private String link;
 
     @Builder
-
     public File(Long fileId, String name, LocalDateTime createdAt, String resource, String fileType, Double fileSize, String path, LocalDateTime lastModifiedAt, Long download, Long view, boolean uploaded, String password, String link) {
         this.fileId = fileId;
         this.name = name;
@@ -68,5 +67,13 @@ public class File {
         this.uploaded = uploaded;
         this.password = password;
         this.link = link;
+    }
+
+    public void updateViewCount() {
+        view = view + 1;
+    }
+
+    public void updateDownloadCount() {
+        download = download + 1;
     }
 }
