@@ -1,7 +1,9 @@
 package acc.hotsix.file_share.application;
 
 import acc.hotsix.file_share.dao.FileRepository;
+import acc.hotsix.file_share.dao.LogRepository;
 import acc.hotsix.file_share.domain.File;
+import acc.hotsix.file_share.domain.Log;
 import acc.hotsix.file_share.dto.FileMetadataResponseDto;
 import acc.hotsix.file_share.global.error.FileNotFoundException;
 import acc.hotsix.file_share.global.error.InvalidShareLinkException;
@@ -20,6 +22,8 @@ public class FileServiceImpl implements FileService {
     private final FileRepository fileRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final LogRepository logRepository;
 
     // ID를 통한 파일 메타데이터 조회
     public File getFileById(Long fileId) throws FileNotFoundException {
@@ -77,6 +81,14 @@ public class FileServiceImpl implements FileService {
     public FileMetadataResponseDto getMetadataById(Long fileId) {
         File file = fileRepository.findById(fileId).get();
         file.updateViewCount();
+
+        Log log = Log.builder()
+                .type(Log.Type.READ)
+                .file(file)
+                .build();
+
+        logRepository.save(log);
+
         return FileMetadataResponseDto.toFileResponseDto(file);
     }
 }

@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -32,6 +33,8 @@ public class QFile extends EntityPathBase<File> {
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = createDateTime("lastModifiedAt", java.time.LocalDateTime.class);
 
     public final StringPath link = createString("link");
+
+    public final ListPath<Log, QLog> logs = this.<Log, QLog>createList("logs", Log.class, QLog.class, PathInits.DIRECT2);
 
     public final StringPath name = createString("name");
 

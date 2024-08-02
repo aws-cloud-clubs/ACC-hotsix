@@ -1,6 +1,8 @@
 package acc.hotsix.file_share.application;
 
+import acc.hotsix.file_share.dao.LogRepository;
 import acc.hotsix.file_share.domain.File;
+import acc.hotsix.file_share.domain.Log;
 import acc.hotsix.file_share.global.error.FileDuplicateException;
 import acc.hotsix.file_share.global.error.FileNotFoundException;
 import acc.hotsix.file_share.global.error.FileTypeMismatchException;
@@ -20,6 +22,7 @@ import java.util.List;
 public class FileUpdateServiceImpl implements FileUpdateService {
     private final FileService fileService;
     private final FileUploadService fileUploadService;
+    private final LogRepository logRepository;
 
     // 파일 업데이트
     public void updateFile(String fileId, String newDirectory, MultipartFile file)
@@ -57,5 +60,13 @@ public class FileUpdateServiceImpl implements FileUpdateService {
 
         // 업데이트된 메타 데이터 저장
         fileService.saveMetaData(fileMetaData);
+
+        // 수정 로그 생성
+        Log log = Log.builder()
+                .type(Log.Type.UPDATE)
+                .file(fileMetaData)
+                .build();
+
+        logRepository.save(log);
     }
 }
