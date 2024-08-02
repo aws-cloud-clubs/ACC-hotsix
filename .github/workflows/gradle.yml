@@ -37,9 +37,9 @@ jobs:
         run: 
           chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build -x test
-        shell: bash
+      # - name: Build with Gradle
+      #   run: ./gradlew build -x test
+      #   shell: bash
       
       ## create application-prod.yml
       - name: create application-prod.yml
