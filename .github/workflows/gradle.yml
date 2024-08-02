@@ -47,7 +47,6 @@ jobs:
         if: contains(github.ref, 'develop')
         run: |
           cd ./src/main
-          mkdir resources
           cd ./resources
           touch ./application.yml
           ls *
