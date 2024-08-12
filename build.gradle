@@ -44,8 +44,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	implementation platform('com.amazonaws:aws-java-sdk-bom:1.12.529')
-	implementation 'com.amazonaws:aws-java-sdk-s3'
+	implementation platform('software.amazon.awssdk:bom:2.21.1')
+	implementation 'software.amazon.awssdk:s3'
 
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
