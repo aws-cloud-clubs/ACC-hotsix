@@ -23,7 +23,7 @@ public class FileUploadController {
 
     Map<String, Object> resultMap;
 
-    // 업로드 핸들러
+    // 업로드 presignedURL 요청 및 처리 핸들러
     @PostMapping("/files")
     public ResponseEntity<Map<String, Object>> handleUploadFile(@Valid @ModelAttribute UploadFilePostReq req, BindingResult bindingResult) {
         resultMap = new HashMap<>();
@@ -40,8 +40,9 @@ public class FileUploadController {
         String password = req.getPassword();
 
         try {
-            fileUploadService.uploadFile(file, directory, password);
+            fileUploadService.uploadFileToS3(file, directory, password);
             resultMap.put("message", "File uploaded successfully");
+
             return ResponseEntity.ok(resultMap);
         } catch (UploadFileException e) {
             resultMap.put("error", e.getMessage());
