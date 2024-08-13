@@ -47,7 +47,7 @@ public class FileUpdateServiceImpl implements FileUpdateService {
         }
 
         // 수정된 파일 S3에 업로드
-        fileUploadService.uploadFileToS3(file, fileId);
+        //fileUploadService.uploadFileToS3(file, fileId);
 
         fileMetaData.setName(file.getOriginalFilename());   // 메타 데이터 수정 - 파일명
         fileMetaData.setPath(newDirectory);                 // 메타 데이터 수정 - 경로

@@ -5,18 +5,19 @@ import acc.hotsix.file_share.dao.LogRepository;
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.domain.Log;
 import acc.hotsix.file_share.dto.FileDownloadDto;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.S3Object;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.model.S3Object;
+
+import java.io.InputStream;
 
 @Service
 @RequiredArgsConstructor
 public class FileDownloadService {
 
-    private final AmazonS3Client amazonS3Client;
+   // private final AmazonS3Client amazonS3Client;
     private final FileRepository fileRepository;
     private final LogRepository logRepository;
 
@@ -35,9 +36,9 @@ public class FileDownloadService {
 
         logRepository.save(log);
 
-        S3Object object = amazonS3Client.getObject(bucketName, fileId.toString());
+     // S3Object object = amazonS3Client.getObject(bucketName, fileId.toString());
         String filename = fileRepository.findNameById(fileId);
-        return new FileDownloadDto(object.getObjectContent(), filename);
+        return new FileDownloadDto(InputStream.nullInputStream(), filename); // TODO: 수정
     }
 
 }
