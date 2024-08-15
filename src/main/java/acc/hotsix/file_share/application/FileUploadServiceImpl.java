@@ -84,12 +84,8 @@ public class FileUploadServiceImpl implements FileUploadService {
         Long fileId = savedFile.getFileId();
 
         try {
-            // presigned URL 생성
-            String presignedURL = createUploadPresignedUrl(fileId.toString());
-
-
-            // 파일 업로드 요청 전송
-            useSdkHttpClientToPut(presignedURL, file);
+            // presigned URL 생성 및 업로드 요청
+            uploadPresignedURL(fileId, file);
 
             // 메타데이터 업데이트 - 업로드 완료
             savedFile.setUploaded(true);
@@ -107,6 +103,15 @@ public class FileUploadServiceImpl implements FileUploadService {
                 .build();
 
         logRepository.save(log);
+    }
+
+    // 업로드 presignedURL 요청
+    public void uploadPresignedURL(Long fileId, MultipartFile file) throws Exception {
+        // presigned URL 생성
+        String presignedURL = createUploadPresignedUrl(fileId.toString());
+
+        // 파일 업로드 요청 전송
+        useSdkHttpClientToPut(presignedURL, file);
     }
 
     // 업로드 presignedURL 생성

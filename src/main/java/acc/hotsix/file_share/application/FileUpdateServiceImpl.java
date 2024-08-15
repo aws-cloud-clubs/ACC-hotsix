@@ -9,6 +9,7 @@ import acc.hotsix.file_share.global.error.FileTypeMismatchException;
 import acc.hotsix.file_share.global.error.UploadFileException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,9 +26,8 @@ public class FileUpdateServiceImpl implements FileUpdateService {
     private final LogRepository logRepository;
 
     // 파일 업데이트
-    public void updateFile(String fileId, String newDirectory, MultipartFile file)
-            throws FileNotFoundException, UploadFileException, FileTypeMismatchException, FileDuplicateException
-    {
+    public void updateFile(MultipartFile file, String fileId, String newDirectory)
+            throws Exception {
         File fileMetaData = fileService.getFileById(Long.parseLong(fileId));
 
         // 파일 타입 동일 여부 확인
@@ -47,7 +47,7 @@ public class FileUpdateServiceImpl implements FileUpdateService {
         }
 
         // 수정된 파일 S3에 업로드
-        //fileUploadService.uploadFileToS3(file, fileId);
+        fileUploadService.uploadPresignedURL(Long.parseLong(fileId), file);
 
         fileMetaData.setName(file.getOriginalFilename());   // 메타 데이터 수정 - 파일명
         fileMetaData.setPath(newDirectory);                 // 메타 데이터 수정 - 경로
@@ -69,4 +69,5 @@ public class FileUpdateServiceImpl implements FileUpdateService {
 
         logRepository.save(log);
     }
+
 }

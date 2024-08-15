@@ -56,7 +56,7 @@ public class FileUpdateController {
             }
 
             // 파일 업데이트
-            fileUpdateService.updateFile(fileId, directory, file);
+            fileUpdateService.updateFile(file, fileId, directory);
             resultMap.put("message", "File updated successfully");
             return ResponseEntity.ok(resultMap);
         } catch (FileNotFoundException e) {
