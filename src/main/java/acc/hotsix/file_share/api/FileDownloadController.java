@@ -39,13 +39,13 @@ public class FileDownloadController {
     // 파일 다운로드
     @GetMapping("/{file-id}/download")
     public ResponseEntity downloadFile(@PathVariable("file-id") Long fileId,
-                                       @NotEmpty @RequestParam("password") String password) throws IOException {
+                                       @NotEmpty @RequestParam("password") String password) throws Exception {
         ResponseEntity<HashMap> FORBIDDEN = isPasswordValid(fileId, password);
         if (FORBIDDEN != null) return FORBIDDEN;
 
         FileDownloadDto downloadDto = fileDownloadService.downloadFile(fileId);
 
-        byte[] content = downloadDto.getInputStream().readAllBytes();
+        byte[] content = downloadDto.getByteArrayOutputStream().toByteArray();
         String filename = downloadDto.getFilename();
 
         HttpHeaders headers = new HttpHeaders();
