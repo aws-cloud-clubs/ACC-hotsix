@@ -25,19 +25,8 @@ public class FileDownloadController {
     private final FileService fileService;
     private final FileDownloadService fileDownloadService;
 
-    // 파일 상세 조회 (메타데이터)
-    @GetMapping("/{file-id}")
-    public ResponseEntity getFileMetadata(@PathVariable("file-id") Long fileId,
-                                          @NotEmpty @RequestParam("password") String password) {
-        ResponseEntity<HashMap> FORBIDDEN = isPasswordValid(fileId, password);
-        if (FORBIDDEN != null) return FORBIDDEN;
-
-        FileMetadataResponseDto responseDto = fileService.getMetadataById(fileId);
-        return ResponseEntity.ok().body(responseDto);
-    }
-
     // 파일 다운로드
-    @GetMapping("/{file-id}/download")
+    @GetMapping("/download/{file-id}")
     public ResponseEntity downloadFile(@PathVariable("file-id") Long fileId,
                                        @NotEmpty @RequestParam("password") String password) throws Exception {
         ResponseEntity<HashMap> FORBIDDEN = isPasswordValid(fileId, password);

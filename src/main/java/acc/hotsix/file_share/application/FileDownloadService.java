@@ -60,7 +60,7 @@ public class FileDownloadService {
     }
 
     // 다운로드 presignedURL 생성
-    private String createPresignedGetUrl(String bucketName, String keyName) throws Exception {
+    public String createPresignedGetUrl(String bucketName, String keyName) throws Exception {
         try {
             GetObjectRequest objectRequest = GetObjectRequest.builder()
                     .bucket(bucketName)

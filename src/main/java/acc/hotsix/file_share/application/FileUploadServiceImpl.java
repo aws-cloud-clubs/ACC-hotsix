@@ -22,7 +22,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import acc.hotsix.file_share.domain.File;
 import software.amazon.awssdk.core.internal.sync.FileContentStreamProvider;
@@ -108,18 +110,23 @@ public class FileUploadServiceImpl implements FileUploadService {
     // 업로드 presignedURL 요청
     public void uploadPresignedURL(Long fileId, MultipartFile file) throws Exception {
         // presigned URL 생성
-        String presignedURL = createUploadPresignedUrl(fileId.toString());
+        String presignedURL = createUploadPresignedUrl(fileId.toString(), file.getContentType(), file.getSize());
+        System.out.println(presignedURL);
 
         // 파일 업로드 요청 전송
         useSdkHttpClientToPut(presignedURL, file);
     }
 
     // 업로드 presignedURL 생성
-    private String createUploadPresignedUrl(String key) throws Exception {
+    private String createUploadPresignedUrl(String key, String contentType, Long size) throws Exception {
         try {
+            System.out.println(contentType);
+
             PutObjectRequest objectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(key)
+                    .contentType(contentType)
+                    .contentLength(size)
                     .build();
 
             PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
@@ -146,6 +153,10 @@ public class FileUploadServiceImpl implements FileUploadService {
             SdkHttpRequest.Builder requestBuilder = SdkHttpRequest.builder()
                     .method(SdkHttpMethod.PUT) // PUT 메소드 설정
                     .uri(presignedUrl.toURI()); // URI 설정
+
+            // 헤더 추가
+            requestBuilder.putHeader("Content-Type", file.getContentType());
+            requestBuilder.putHeader("Content-Length", String.valueOf(file.getSize()));
 
             // SdkHttpRequest 객체를 최종 생성
             SdkHttpRequest request = requestBuilder.build();
