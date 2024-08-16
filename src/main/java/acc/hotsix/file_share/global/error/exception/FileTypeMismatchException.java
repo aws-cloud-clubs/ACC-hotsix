@@ -1,4 +1,4 @@
-package acc.hotsix.file_share.global.error;
+package acc.hotsix.file_share.global.error.exception;
 
 public class FileTypeMismatchException extends Exception {
     public FileTypeMismatchException(String fileName, String expectedExtension, String actualExtension) {

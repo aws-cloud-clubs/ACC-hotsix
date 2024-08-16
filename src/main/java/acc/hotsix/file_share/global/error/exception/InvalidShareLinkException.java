@@ -1,4 +1,4 @@
-package acc.hotsix.file_share.global.error;
+package acc.hotsix.file_share.global.error.exception;
 
 public class InvalidShareLinkException extends Exception {
     public InvalidShareLinkException() {

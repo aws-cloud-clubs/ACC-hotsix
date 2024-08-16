@@ -3,8 +3,7 @@ package acc.hotsix.file_share.api;
 import acc.hotsix.file_share.application.FileDownloadService;
 import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.dto.FileDownloadDto;
-import acc.hotsix.file_share.dto.FileMetadataResponseDto;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
+import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 

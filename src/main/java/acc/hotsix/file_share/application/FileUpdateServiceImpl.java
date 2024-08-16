@@ -3,13 +3,10 @@ package acc.hotsix.file_share.application;
 import acc.hotsix.file_share.dao.LogRepository;
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.domain.Log;
-import acc.hotsix.file_share.global.error.FileDuplicateException;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
-import acc.hotsix.file_share.global.error.FileTypeMismatchException;
-import acc.hotsix.file_share.global.error.UploadFileException;
+import acc.hotsix.file_share.global.error.exception.FileDuplicateException;
+import acc.hotsix.file_share.global.error.exception.FileTypeMismatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 

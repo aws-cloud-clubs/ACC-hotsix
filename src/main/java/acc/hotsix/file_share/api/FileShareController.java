@@ -2,21 +2,18 @@ package acc.hotsix.file_share.api;
 
 import acc.hotsix.file_share.application.FileDownloadService;
 import acc.hotsix.file_share.application.FileService;
-import acc.hotsix.file_share.application.FileShareService;
 import acc.hotsix.file_share.dto.FileSharePostReq;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
-import acc.hotsix.file_share.global.error.InvalidShareLinkException;
+import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
+import acc.hotsix.file_share.global.error.exception.InvalidShareLinkException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 

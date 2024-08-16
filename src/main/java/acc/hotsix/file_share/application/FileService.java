@@ -2,8 +2,8 @@ package acc.hotsix.file_share.application;
 
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.dto.FileMetadataResponseDto;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
-import acc.hotsix.file_share.global.error.InvalidShareLinkException;
+import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
+import acc.hotsix.file_share.global.error.exception.InvalidShareLinkException;
 
 import java.util.HashMap;
 import java.util.List;

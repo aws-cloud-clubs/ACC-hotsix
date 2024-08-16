@@ -2,8 +2,8 @@ package acc.hotsix.file_share.api;
 
 import acc.hotsix.file_share.application.FileUploadService;
 import acc.hotsix.file_share.dto.UploadFilePostReq;
-import acc.hotsix.file_share.global.error.FileDuplicateException;
-import acc.hotsix.file_share.global.error.UploadFileException;
+import acc.hotsix.file_share.global.error.exception.FileDuplicateException;
+import acc.hotsix.file_share.global.error.exception.UploadFileException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -3,7 +3,7 @@ package acc.hotsix.file_share.api;
 import acc.hotsix.file_share.application.FileDeleteService;
 import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.dto.DeleteFileReq;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
+import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.TypeMismatchException;

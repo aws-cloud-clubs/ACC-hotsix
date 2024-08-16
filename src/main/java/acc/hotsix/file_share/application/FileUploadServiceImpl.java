@@ -2,8 +2,8 @@ package acc.hotsix.file_share.application;
 
 import acc.hotsix.file_share.dao.LogRepository;
 import acc.hotsix.file_share.domain.Log;
-import acc.hotsix.file_share.global.error.FileDuplicateException;
-import acc.hotsix.file_share.global.error.UploadFileException;
+import acc.hotsix.file_share.global.error.exception.FileDuplicateException;
+import acc.hotsix.file_share.global.error.exception.UploadFileException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,19 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import acc.hotsix.file_share.domain.File;
 import software.amazon.awssdk.core.internal.sync.FileContentStreamProvider;

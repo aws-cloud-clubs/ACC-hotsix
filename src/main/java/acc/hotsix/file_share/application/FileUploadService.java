@@ -1,7 +1,7 @@
 package acc.hotsix.file_share.application;
 
-import acc.hotsix.file_share.global.error.FileDuplicateException;
-import acc.hotsix.file_share.global.error.UploadFileException;
+import acc.hotsix.file_share.global.error.exception.FileDuplicateException;
+import acc.hotsix.file_share.global.error.exception.UploadFileException;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileUploadService {
