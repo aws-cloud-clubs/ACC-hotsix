@@ -1,4 +1,9 @@
 package acc.hotsix.file_share.global.error.exception;
 
-public class InvalidPasswordException extends Exception{
+import acc.hotsix.file_share.global.error.ExceptionCode;
+
+public class InvalidPasswordException extends BusinessException{
+    public InvalidPasswordException() {
+        super(ExceptionCode.INVALID_PASSWORD);
+    }
 }

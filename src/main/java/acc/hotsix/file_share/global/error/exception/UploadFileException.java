@@ -1,7 +1,9 @@
 package acc.hotsix.file_share.global.error.exception;
 
-public class UploadFileException extends Exception {
+import acc.hotsix.file_share.global.error.ExceptionCode;
+
+public class UploadFileException extends BusinessException {
     public UploadFileException() {
-        super("An error occurred during file upload.");
+        super(ExceptionCode.UPLOAD_ERROR);
     }
 }

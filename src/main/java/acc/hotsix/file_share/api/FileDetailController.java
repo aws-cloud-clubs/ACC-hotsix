@@ -5,7 +5,7 @@ import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.dto.FileMetadataResponseDto;
 import acc.hotsix.file_share.dto.FileSharePostReq;
 import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
-import acc.hotsix.file_share.global.error.exception.InvalidShareLinkException;
+import acc.hotsix.file_share.global.error.exception.ShareFileException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +79,7 @@ public class FileDetailController {
         } catch (FileNotFoundException e) {
             resultMap.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
-        } catch (InvalidShareLinkException e) {
+        } catch (ShareFileException e) {
             resultMap.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         } catch (Exception e) {

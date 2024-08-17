@@ -1,4 +1,9 @@
 package acc.hotsix.file_share.global.error.exception;
 
-public class DeleteFileException extends Exception{
+import acc.hotsix.file_share.global.error.ExceptionCode;
+
+public class DeleteFileException extends BusinessException{
+    public DeleteFileException() {
+        super(ExceptionCode.DELETE_ERROR);
+    }
 }

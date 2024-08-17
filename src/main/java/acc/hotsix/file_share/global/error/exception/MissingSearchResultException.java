@@ -1,7 +1,9 @@
 package acc.hotsix.file_share.global.error.exception;
 
-public class MissingSearchResultException extends Exception{
+import acc.hotsix.file_share.global.error.ExceptionCode;
+
+public class MissingSearchResultException extends BusinessException{
     public MissingSearchResultException() {
-        super("Search results do not exist.");
+        super(ExceptionCode.MISSING_SEARCH_RESULT);
     }
 }

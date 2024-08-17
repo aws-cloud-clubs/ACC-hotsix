@@ -1,7 +1,9 @@
 package acc.hotsix.file_share.global.error.exception;
 
-public class InvalidQueryParamException extends Exception{
+import acc.hotsix.file_share.global.error.ExceptionCode;
+
+public class InvalidQueryParamException extends BusinessException{
     public InvalidQueryParamException() {
-        super("Name, time parameter must be 'asc', 'desc'.");
+        super(ExceptionCode.INVALID_QUERY_PARAM);
     }
 }

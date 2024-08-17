@@ -1,7 +1,9 @@
 package acc.hotsix.file_share.global.error.exception;
 
-public class FileNotFoundException extends Exception {
-    public FileNotFoundException(String fileName) {
-        super("The file '" + fileName + "' does not exist.");
+import acc.hotsix.file_share.global.error.ExceptionCode;
+
+public class FileNotFoundException extends BusinessException {
+    public FileNotFoundException() {
+        super(ExceptionCode.FILE_NOT_FOUND);
     }
 }
