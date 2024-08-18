@@ -3,6 +3,7 @@ package acc.hotsix.file_share.application;
 import acc.hotsix.file_share.dao.LogRepository;
 import acc.hotsix.file_share.domain.Log;
 import acc.hotsix.file_share.global.error.exception.FileDuplicateException;
+import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
 import acc.hotsix.file_share.global.error.exception.UploadFileException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,7 +51,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         // 파일 메타데이터 등록
         List<File> duplicateFiles = fileService.getSameNameAndPathFileList(file.getOriginalFilename(), directory);
         if (!duplicateFiles.isEmpty()) {    // 중복 파일 처리
-            throw new FileDuplicateException("File duplicate.");
+            throw new FileDuplicateException();
         }
 
         // 파일 메타 데이터 - 파일 사이즈
@@ -88,7 +89,6 @@ public class FileUploadServiceImpl implements FileUploadService {
             savedFile.setUploaded(true);
             fileService.saveMetaData(savedFile);
         } catch (Exception e) {
-            e.printStackTrace();
             fileService.removeFileMetaData(savedFile);
             throw new UploadFileException();
         }
@@ -103,42 +103,39 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     // 업로드 presignedURL 요청
-    public void uploadPresignedURL(Long fileId, MultipartFile file) throws Exception {
+    public void uploadPresignedURL(Long fileId, MultipartFile file) {
         // presigned URL 생성
         String presignedURL = createUploadPresignedUrl(fileId.toString(), file.getContentType(), file.getSize());
-        System.out.println(presignedURL);
 
         // 파일 업로드 요청 전송
-        useSdkHttpClientToPut(presignedURL, file);
-    }
-
-    // 업로드 presignedURL 생성
-    private String createUploadPresignedUrl(String key, String contentType, Long size) throws Exception {
         try {
-            System.out.println(contentType);
-
-            PutObjectRequest objectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(key)
-                    .contentType(contentType)
-                    .contentLength(size)
-                    .build();
-
-            PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofMinutes(5))  // 유효 시간 5분
-                    .putObjectRequest(objectRequest)
-                    .build();
-
-            PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
-            return presignedRequest.url().toExternalForm();
+            useSdkHttpClientToPut(presignedURL, file);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception(); // TODO: 오류처리
+            throw new UploadFileException();
         }
     }
 
+    // 업로드 presignedURL 생성
+    private String createUploadPresignedUrl(String key, String contentType, Long size){
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .contentType(contentType)
+                .contentLength(size)
+                .build();
+
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(5))  // 유효 시간 5분
+                .putObjectRequest(objectRequest)
+                .build();
+
+        PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
+        return presignedRequest.url().toExternalForm();
+
+    }
+
     // S3에 파일 업로드 요청
-    private void useSdkHttpClientToPut(String presignedUrlString, MultipartFile file) {
+    private void useSdkHttpClientToPut(String presignedUrlString, MultipartFile file) throws IOException, URISyntaxException {
         // 멀티 파트 변환용 파일 객체 생성
         java.io.File fileToPut = new java.io.File(System.getProperty("java.io.tmpdir") + file.getOriginalFilename());
 
@@ -168,9 +165,12 @@ public class FileUploadServiceImpl implements FileUploadService {
             try (SdkHttpClient sdkHttpClient = ApacheHttpClient.create()) {
                 HttpExecuteResponse response = sdkHttpClient.prepareRequest(executeRequest).call();
             }
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
-        } finally {
+        } catch (URISyntaxException e) {
+            throw new URISyntaxException(e.getInput(), e.getReason());
+        } catch (IOException e) {
+            throw new IOException();
+        }
+        finally{
             if(fileToPut.exists()) {
                 fileToPut.delete();
             }

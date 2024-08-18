@@ -87,43 +87,4 @@ public class FileQuerySearchController {
         return content;
     }
 
-    // 조회할 값이 없음
-    @ExceptionHandler(MissingSearchResultException.class)
-    public ResponseEntity<Map<String, Object>> noQueryFilesExceptionHandler(MissingSearchResultException e) {
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("error", e.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
-    }
-
-    // 검색 조건이 없음
-    @ExceptionHandler(MissingSearchParamException.class)
-    public ResponseEntity<Map<String, Object>> missingSearchReqParamExceptionHandler(MissingSearchParamException e) {
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("error", e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
-    }
-
-    // 파라미터가 asc, desc 가 아닌 다른 값임
-    @ExceptionHandler(InvalidQueryParamException.class)
-    public ResponseEntity<Map<String, Object>> invalidQueryReqParamExceptionHandler(InvalidQueryParamException e) {
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("error", e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
-    }
-
-    // 파라미터 타입이 불일치
-    @ExceptionHandler(TypeMismatchException.class)
-    public ResponseEntity<Map<String, Object>> typeMismatchExceptionHandler (TypeMismatchException e) {
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("error", "Invalid parameter data type");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
-    }
-
-    // 서버 오류 처리
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> exceptionHandler(Exception e) {
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("error", "An unexpected error occurred: " + e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
-    }
 }

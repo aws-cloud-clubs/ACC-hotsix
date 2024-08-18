@@ -5,6 +5,7 @@ import acc.hotsix.file_share.dao.LogRepository;
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.domain.Log;
 import acc.hotsix.file_share.dto.FileDownloadDto;
+import acc.hotsix.file_share.global.error.exception.DownloadFileException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -60,30 +61,24 @@ public class FileDownloadService {
     }
 
     // 다운로드 presignedURL 생성
-    public String createPresignedGetUrl(String bucketName, String keyName) throws Exception {
-        try {
-            GetObjectRequest objectRequest = GetObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(keyName)
-                    .build();
+    public String createPresignedGetUrl(String bucketName, String keyName) {
+        GetObjectRequest objectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(keyName)
+                .build();
 
-            GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofMinutes(5))  // 유효 시간 5분
-                    .getObjectRequest(objectRequest)
-                    .build();
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(5))  // 유효 시간 5분
+                .getObjectRequest(objectRequest)
+                .build();
 
-            PresignedGetObjectRequest presignedRequest = s3Presigner.presignGetObject(presignRequest);
+        PresignedGetObjectRequest presignedRequest = s3Presigner.presignGetObject(presignRequest);
 
-            return presignedRequest.url().toExternalForm();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception(); // TODO: 오류처리
-        }
+        return presignedRequest.url().toExternalForm();
     }
 
     // 파일 다운로드 요청
-    private ByteArrayOutputStream useSdkHttpClientToPut(String presignedUrlString) {
-
+    private ByteArrayOutputStream useSdkHttpClientToPut(String presignedUrlString) throws URISyntaxException, IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); // Capture the response body to a byte array.
         try {
             URL presignedUrl = new URL(presignedUrlString);
@@ -103,15 +98,17 @@ public class FileDownloadService {
                             try {
                                 IoUtils.copy(abortableInputStream, byteArrayOutputStream);
                             } catch (IOException e) {
-                                throw new RuntimeException(e);
+                                throw new DownloadFileException();
                             }
                         },
                         () -> {
-                            throw new IllegalStateException("Response body is missing."); // TODO: 오류처리
+                            throw new DownloadFileException();
                         });
             }
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            throw new URISyntaxException(e.getInput(), e.getReason());
+        } catch (IOException e) {
+            throw new IOException();
         }
         return byteArrayOutputStream;
     }
