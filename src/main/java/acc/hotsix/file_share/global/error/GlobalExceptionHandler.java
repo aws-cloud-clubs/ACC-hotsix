@@ -4,8 +4,8 @@ import acc.hotsix.file_share.global.error.exception.*;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -14,8 +14,8 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class GlobalExceptionHandler {
     /* 공통 예외 */
     // 유효성 검사 실패
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handle(MethodArgumentNotValidException e) {
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ExceptionResponse> handle(BindException e) {
         return createErrorResponseEntity(ExceptionCode.INVALID_INPUT);
     }
 
@@ -60,7 +60,6 @@ public class GlobalExceptionHandler {
     // 파일 확장자가 일치하지 않음
     @ExceptionHandler(FileTypeMismatchException.class)
     public ResponseEntity<ExceptionResponse> handle(FileTypeMismatchException e) {
-        e.printStackTrace();
         return createErrorResponseEntity(e.getExceptionCode());
     }
 
@@ -119,6 +118,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DeleteFileException.class)
     public ResponseEntity<ExceptionResponse> handle(DeleteFileException e) {
         return createErrorResponseEntity(e.getExceptionCode());
+    }
+
+    // 전역 예외 처리
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handle(Exception e) {
+        return createErrorResponseEntity(ExceptionCode.EXCEPTION);
     }
 
     private ResponseEntity<ExceptionResponse> createErrorResponseEntity(ExceptionCode exceptionCode) {

@@ -10,11 +10,10 @@ import acc.hotsix.file_share.global.error.exception.InvalidPasswordException;
 import acc.hotsix.file_share.global.error.exception.UpdateFileException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,15 +37,12 @@ public class FileUpdateController {
     public ResponseEntity<Map<String, Object>> handleFileUpdate(
             @PathVariable("file_id") String fileId,
             @Valid @ModelAttribute UpdateFilePatchReq req, BindingResult bindingResult
-            ) {
+            ) throws BindException {
         resultMap = new HashMap<>();
 
         // 유효성 검사
         if (bindingResult.hasErrors()) {
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                resultMap.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
+            throw new BindException(bindingResult);
         }
 
         MultipartFile file = req.getFile();

@@ -36,6 +36,9 @@ public enum ExceptionCode {
     DETAIL_ERROR("API-003", "An error occurred during file read.", 500),
     SHARE_ERROR("API-004", "An error occurred while generating the file share link.", 500),
     DELETE_ERROR("API-005", "An error occurred during file delete.", 500),
+
+    // 전역 예외
+    EXCEPTION("exception", "An unexpected error occurred", 500)
     ;
 
     private final String code;
