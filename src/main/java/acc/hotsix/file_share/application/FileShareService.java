@@ -1,6 +1,6 @@
 package acc.hotsix.file_share.application;
 
-import acc.hotsix.file_share.global.error.FileNotFoundException;
+import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
 
 import java.security.NoSuchAlgorithmException;
 

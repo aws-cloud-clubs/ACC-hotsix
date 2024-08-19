@@ -2,16 +2,18 @@ package acc.hotsix.file_share.api;
 
 import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.application.FileUpdateService;
+import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.dto.UpdateFilePatchReq;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
-import acc.hotsix.file_share.global.error.FileTypeMismatchException;
-import acc.hotsix.file_share.global.error.UploadFileException;
+import acc.hotsix.file_share.global.error.exception.FileDuplicateException;
+import acc.hotsix.file_share.global.error.exception.FileTypeMismatchException;
+import acc.hotsix.file_share.global.error.exception.InvalidPasswordException;
+import acc.hotsix.file_share.global.error.exception.UpdateFileException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,43 +37,49 @@ public class FileUpdateController {
     public ResponseEntity<Map<String, Object>> handleFileUpdate(
             @PathVariable("file_id") String fileId,
             @Valid @ModelAttribute UpdateFilePatchReq req, BindingResult bindingResult
-            ) {
+            ) throws BindException {
         resultMap = new HashMap<>();
 
+        // 유효성 검사
         if (bindingResult.hasErrors()) {
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                resultMap.put(error.getField(), error.getDefaultMessage());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);   // TODO 에러 처리 추후 수정 예정
-            }
+            throw new BindException(bindingResult);
         }
 
         MultipartFile file = req.getFile();
         String directory = req.getDirectory();
         String password = req.getPassword();
 
-        try {
-            // 비밀번호를 이용한 파일 접근 권한 확인
-            if (!fileService.validateFileAccess(Long.parseLong(fileId), password)) {
-                resultMap.put("error", "Access denied: invalid password");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
-            }
+        // 비밀번호를 이용한 파일 접근 권한 확인
+        if (!fileService.validateFileAccess(Long.parseLong(fileId), password)) {
+            throw new InvalidPasswordException();
+        }
 
-            // 파일 업데이트
-            fileUpdateService.updateFile(fileId, directory, file);
+        File fileMetaData = fileService.getFileById(Long.parseLong(fileId));
+
+        // 파일 타입 동일 여부 확인
+        String fileType = StringUtils.getFilenameExtension(file.getOriginalFilename());
+        if (fileType == null) {
+            fileType = file.getContentType();
+        }
+        if (!fileType.equals(fileMetaData.getFileType())) {
+            throw new FileTypeMismatchException();
+        }
+
+        // 파일 중복 여부 확인
+        List<File> duplicateFiles = fileService.getSameNameAndPathFileList(file.getOriginalFilename(), directory);
+        for (File metaData : duplicateFiles) {
+            if (!(metaData.getFileId() == Long.parseLong(fileId))) {
+                throw new FileDuplicateException();
+            }
+        }
+
+        // 파일 업데이트
+        try {
+            fileUpdateService.updateFile(file, fileId, directory);
             resultMap.put("message", "File updated successfully");
             return ResponseEntity.ok(resultMap);
-        } catch (FileNotFoundException e) {
-            resultMap.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
-        } catch (UploadFileException e) {
-            resultMap.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
-        } catch (FileTypeMismatchException e) {
-            resultMap.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         } catch (Exception e) {
-            resultMap.put("error", "An unexpected error occurred: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
+            throw new UpdateFileException();
         }
     }
 }

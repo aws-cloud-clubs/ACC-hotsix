@@ -2,8 +2,8 @@ package acc.hotsix.file_share.application;
 
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.dto.FileMetadataResponseDto;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
-import acc.hotsix.file_share.global.error.InvalidShareLinkException;
+import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
+import acc.hotsix.file_share.global.error.exception.ShareFileException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +21,7 @@ public interface FileService {
 
     HashMap getAllUrlMap();
 
-    String getResourceByLink(String link) throws InvalidShareLinkException;
+    String getResourceByLink(String link) throws ShareFileException;
 
     FileMetadataResponseDto getMetadataById(Long fileId);
 }

@@ -3,9 +3,9 @@ package acc.hotsix.file_share.api;
 import acc.hotsix.file_share.application.FileDownloadService;
 import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.dto.FileDownloadDto;
-import acc.hotsix.file_share.dto.FileMetadataResponseDto;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
-import jakarta.validation.constraints.NotEmpty;
+import acc.hotsix.file_share.global.error.exception.DownloadFileException;
+import acc.hotsix.file_share.global.error.exception.InvalidPasswordException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,9 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,48 +25,28 @@ public class FileDownloadController {
     private final FileService fileService;
     private final FileDownloadService fileDownloadService;
 
-    // 파일 상세 조회 (메타데이터)
-    @GetMapping("/{file-id}")
-    public ResponseEntity getFileMetadata(@PathVariable("file-id") Long fileId,
-                                          @NotEmpty @RequestParam("password") String password) {
-        ResponseEntity<HashMap> FORBIDDEN = isPasswordValid(fileId, password);
-        if (FORBIDDEN != null) return FORBIDDEN;
-
-        FileMetadataResponseDto responseDto = fileService.getMetadataById(fileId);
-        return ResponseEntity.ok().body(responseDto);
-    }
-
     // 파일 다운로드
-    @GetMapping("/{file-id}/download")
+    @PostMapping("/download/{file-id}")
     public ResponseEntity downloadFile(@PathVariable("file-id") Long fileId,
-                                       @NotEmpty @RequestParam("password") String password) throws IOException {
-        ResponseEntity<HashMap> FORBIDDEN = isPasswordValid(fileId, password);
-        if (FORBIDDEN != null) return FORBIDDEN;
-
-        FileDownloadDto downloadDto = fileDownloadService.downloadFile(fileId);
-
-        byte[] content = downloadDto.getInputStream().readAllBytes();
-        String filename = downloadDto.getFilename();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", new String(filename.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
-
-        return new ResponseEntity<>(content, headers, HttpStatus.OK);
-    }
-
-    private ResponseEntity<HashMap> isPasswordValid(Long fileId, String password) {
-        try {
-            if (!fileService.validateFileAccess(fileId, password)) {
-                HashMap resultMap = new HashMap<>();
-                resultMap.put("error", "Access denied: invalid password");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
-            }
-        } catch (FileNotFoundException e) {
-            HashMap resultMap = new HashMap<>();
-            resultMap.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
+                                       @Valid @ModelAttribute("password") String password) {
+        if (!fileService.validateFileAccess(fileId, password)) {
+            throw new InvalidPasswordException();
         }
-        return null;
+
+        try {
+            FileDownloadDto downloadDto = fileDownloadService.downloadFile(fileId);
+
+            byte[] content = downloadDto.getByteArrayOutputStream().toByteArray();
+            String filename = downloadDto.getFilename();
+            String mimeType = Files.probeContentType(Paths.get(filename));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.valueOf(mimeType));
+            headers.setContentDispositionFormData("attachment", filename);
+
+            return new ResponseEntity<>(content, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new DownloadFileException();
+        }
     }
 }

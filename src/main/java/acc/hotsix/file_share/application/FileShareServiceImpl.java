@@ -1,7 +1,7 @@
 package acc.hotsix.file_share.application;
 
 import acc.hotsix.file_share.domain.File;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
+import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

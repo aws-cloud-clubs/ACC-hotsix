@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteFileReq {
+public class FilePasswordReq {
     @NotNull
     @NotEmpty
     private String password;

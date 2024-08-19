@@ -3,10 +3,9 @@ package acc.hotsix.file_share.application;
 import acc.hotsix.file_share.dao.LogRepository;
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.domain.Log;
-import acc.hotsix.file_share.global.error.FileDuplicateException;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
-import acc.hotsix.file_share.global.error.FileTypeMismatchException;
-import acc.hotsix.file_share.global.error.UploadFileException;
+import acc.hotsix.file_share.global.error.exception.FileDuplicateException;
+import acc.hotsix.file_share.global.error.exception.FileTypeMismatchException;
+import acc.hotsix.file_share.global.error.exception.UpdateFileException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -25,29 +24,15 @@ public class FileUpdateServiceImpl implements FileUpdateService {
     private final LogRepository logRepository;
 
     // 파일 업데이트
-    public void updateFile(String fileId, String newDirectory, MultipartFile file)
-            throws FileNotFoundException, UploadFileException, FileTypeMismatchException, FileDuplicateException
-    {
+    public void updateFile(MultipartFile file, String fileId, String newDirectory) {
         File fileMetaData = fileService.getFileById(Long.parseLong(fileId));
 
-        // 파일 타입 동일 여부 확인
-        String fileType = StringUtils.getFilenameExtension(file.getOriginalFilename());
-        if (fileType == null) {
-            fileType = file.getContentType();
-        }
-        if (!fileType.equals(fileMetaData.getFileType())) {
-            throw new FileTypeMismatchException(file.getOriginalFilename(), fileMetaData.getFileType(), fileType);
-        }
-
-        List<File> duplicateFiles = fileService.getSameNameAndPathFileList(file.getOriginalFilename(), newDirectory);
-        for (File metaData : duplicateFiles) {
-            if (!(metaData.getFileId() == Long.parseLong(fileId))) {    // 중복 파일 확인
-                throw new FileDuplicateException("File duplicate.");
-            }
-        }
-
         // 수정된 파일 S3에 업로드
-        fileUploadService.uploadFileToS3(file, fileId);
+        try {
+            fileUploadService.uploadPresignedURL(Long.parseLong(fileId), file);
+        } catch(Exception e) {
+            throw new UpdateFileException();
+        }
 
         fileMetaData.setName(file.getOriginalFilename());   // 메타 데이터 수정 - 파일명
         fileMetaData.setPath(newDirectory);                 // 메타 데이터 수정 - 경로
@@ -69,4 +54,5 @@ public class FileUpdateServiceImpl implements FileUpdateService {
 
         logRepository.save(log);
     }
+
 }

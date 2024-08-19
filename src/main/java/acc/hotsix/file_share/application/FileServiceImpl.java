@@ -5,8 +5,9 @@ import acc.hotsix.file_share.dao.LogRepository;
 import acc.hotsix.file_share.domain.File;
 import acc.hotsix.file_share.domain.Log;
 import acc.hotsix.file_share.dto.FileMetadataResponseDto;
-import acc.hotsix.file_share.global.error.FileNotFoundException;
-import acc.hotsix.file_share.global.error.InvalidShareLinkException;
+import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
+import acc.hotsix.file_share.global.error.exception.InvalidPasswordException;
+import acc.hotsix.file_share.global.error.exception.ShareFileException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,11 @@ public class FileServiceImpl implements FileService {
     private final LogRepository logRepository;
 
     // ID를 통한 파일 메타데이터 조회
-    public File getFileById(Long fileId) throws FileNotFoundException {
+    public File getFileById(Long fileId) {
         Optional<File> result = fileRepository.findById(fileId);
 
         if (!result.isPresent()) {
-            throw new FileNotFoundException("File doesn't exit");
+            throw new FileNotFoundException();
         }
 
         return result.get();
@@ -52,8 +53,12 @@ public class FileServiceImpl implements FileService {
     }
 
     // password 검증
-    public boolean validateFileAccess(Long fileId, String password) throws FileNotFoundException {
+    public boolean validateFileAccess(Long fileId, String password) {
         File file = getFileById(fileId);
+
+        if(password == null) {
+            throw new InvalidPasswordException();
+        }
         return passwordEncoder.matches(password, file.getPassword());
     }
 
@@ -68,10 +73,10 @@ public class FileServiceImpl implements FileService {
         return urlMap;
     }
 
-    public String getResourceByLink(String link) throws InvalidShareLinkException {
+    public String getResourceByLink(String link) throws ShareFileException {
         File file = fileRepository.findByLink(link);
         if (file == null) {
-            throw new InvalidShareLinkException();
+            throw new ShareFileException();
         }
         return file.getResource();
     }
