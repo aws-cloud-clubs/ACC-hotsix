@@ -4,10 +4,8 @@ import acc.hotsix.file_share.application.FileDownloadService;
 import acc.hotsix.file_share.application.FileService;
 import acc.hotsix.file_share.dto.FileDownloadDto;
 import acc.hotsix.file_share.global.error.exception.DownloadFileException;
-import acc.hotsix.file_share.global.error.exception.FileNotFoundException;
 import acc.hotsix.file_share.global.error.exception.InvalidPasswordException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,7 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,10 +38,11 @@ public class FileDownloadController {
 
             byte[] content = downloadDto.getByteArrayOutputStream().toByteArray();
             String filename = downloadDto.getFilename();
+            String mimeType = Files.probeContentType(Paths.get(filename));
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", new String(filename.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
+            headers.setContentType(MediaType.valueOf(mimeType));
+            headers.setContentDispositionFormData("attachment", filename);
 
             return new ResponseEntity<>(content, headers, HttpStatus.OK);
         } catch (Exception e) {

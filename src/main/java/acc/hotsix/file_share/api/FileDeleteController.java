@@ -19,7 +19,7 @@ public class FileDeleteController {
     private final FileService fileService;
     private final FileDeleteService fileDeleteService;
 
-    @PostMapping("/files/{id}/delete")
+    @PostMapping("/files/delete/{id}")
     public ResponseEntity<Map<String, Object>> deleteFile(
             @PathVariable("id")Long fileId,
             @Valid @ModelAttribute FilePasswordReq req, BindingResult bindingResult
