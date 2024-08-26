@@ -35,14 +35,14 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      ## create application-prod.yml
-      - name: create application.yml
+      ## create application-prod.properties
+      - name: create application.properties
         run: |
           cd ./src/main
           cd ./resources
-          touch ./application.yml
+          touch ./application.properties
           ls *
-          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+          echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./application.properties
 
       - name: Build with Gradle
         run: ./gradlew build -x test
