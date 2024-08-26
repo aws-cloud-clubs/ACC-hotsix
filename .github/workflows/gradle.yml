@@ -70,6 +70,7 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           mkdir scripts
           touch scripts/deploy.sh
+          echo "source /home/ec2-user/.bash_profile" >> scripts/deploy.sh 
           echo "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_REGISTRY" >> scripts/deploy.sh
           echo "docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> scripts/deploy.sh
           echo "docker stop csbroker-api || true" >> scripts/deploy.sh
