@@ -38,11 +38,10 @@ jobs:
       ## create application-prod.properties
       - name: create application.yml
         run: |
-          cd ./src/main
-          cd ./resources
+          mkdir -p ./src/main/resources
+          cd ./src/main/resources
           touch ./application.yml
-          ls *
-          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+          echo "${{ secrets.APPLICATION }}" > ./application.yml
 
       - name: Build with Gradle
         run: ./gradlew build -x test
