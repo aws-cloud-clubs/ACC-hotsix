@@ -41,7 +41,7 @@ jobs:
           mkdir -p ./src/main/resources
           cd ./src/main/resources
           touch ./application.yml
-          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+          echo "${{ secrets.APPLICATION }}" > ./application.yml
 
       - name: Build with Gradle
         run: ./gradlew build -x test
@@ -82,14 +82,6 @@ jobs:
         run: |
           zip -r deploy-$IMAGE_TAG.zip ./scripts appspec.yml
           aws s3 cp --region ap-northeast-2 --acl private ./deploy-$IMAGE_TAG.zip s3://acc6-s3-dev-an2
-
-      - name: github action test
-        run: |
-          echo "${{ secrets.APPLICATION }}" > secret_file.txt
-          IMAGE_TAG=${{ github.sha }}
-          zip -r deploy-$IMAGE_TAG.zip secret_file.txt
-          aws s3 cp --region ap-northeast-2 --acl private ./deploy-$IMAGE_TAG.zip s3://acc6-s3-dev-an2
-          rm secret_file.txt deploy-$IMAGE_TAG.zip
 
       - name: Start CodeDeploy Agent
         env:
