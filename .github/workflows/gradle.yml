@@ -75,7 +75,7 @@ jobs:
           echo "docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> scripts/deploy.sh
           echo "docker stop csbroker-api || true" >> scripts/deploy.sh
           echo "docker rm csbroker-api || true" >> scripts/deploy.sh
-          echo "docker run -p 8080:8080 -e PROFILE=dev -d --restart always --name csbroker-api $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> scripts/deploy.sh
+          echo "docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev -d --restart always --name csbroker-api $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> scripts/deploy.sh
 
       - name: Upload to S3
         env:
