@@ -36,13 +36,13 @@ jobs:
         run: chmod +x gradlew
 
       ## create application-prod.properties
-      - name: create application.properties
+      - name: create application.yml
         run: |
           cd ./src/main
           cd ./resources
-          touch ./application.properties
+          touch ./application.yml
           ls *
-          echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./application.properties
+          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
 
       - name: Build with Gradle
         run: ./gradlew build -x test
