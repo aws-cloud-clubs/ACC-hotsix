@@ -223,7 +223,6 @@
 
 ## 파일 검색 테스트
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/485a3e47-0f7c-4e76-a68e-5d5a9f3d26fc/image.png)
 ![search](https://github.com/user-attachments/assets/ad6b2c60-c54a-42ed-a9c8-91857818f269)
 
 - 2명의 사용자가 동시 접속
