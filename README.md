@@ -1,3 +1,5 @@
+# 팀원 소개
+
 | 최은소 (INFRA) | 오예린 (INFRA) | 권민정 (BE) | 선우예림 (BE) | 황지민 (BE) |
 | :---: | :---: | :---: | :---: | :---: |
 | <img src="https://avatars.githubusercontent.com/u/93801149?v=4" alt="최은소 프로필" width="180" height="180"> | <img src="https://avatars.githubusercontent.com/YelynnOh" alt="오예린 프로필" width="180" height="180"> | <img src="https://avatars.githubusercontent.com/u/145860909?v=4" alt="권민정 프로필" width="180" height="180"> | <img src="https://avatars.githubusercontent.com/u/54367532?v=4" alt="선우예림 프로필" width="180" height="180"> | <img src="https://avatars.githubusercontent.com/u/88023963?v=4" alt="황지민 프로필" width="180" height="180"> |
@@ -27,14 +29,13 @@
 - 파일 검색: 파일명, 내용 기반 검색 기능 제공 (검색 결과 응답 시간 5초 이내)
 
 # 유저 시나리오
-
-![유저 시나리오 -Version5.drawio.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/388131ba-2bfe-46d3-bbef-cf6af069791b/%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A5_%E1%84%89%E1%85%B5%E1%84%82%E1%85%A1%E1%84%85%E1%85%B5%E1%84%8B%E1%85%A9_-Version5.drawio.png)
+<img src="https://github.com/user-attachments/assets/753a63a3-6c32-44ec-ac69-c837be8e558a" alt="유저 시나리오" width="800">
 
 # 아키텍처 설계
 
 ## 발표 시점
 
-![5차 다이어그램-페이지-1.drawio.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/23c71557-9399-4684-8a1b-24223c790e6c/5%EC%B0%A8_%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8-%ED%8E%98%EC%9D%B4%EC%A7%80-1.drawio.png)
+<img src="https://github.com/user-attachments/assets/7609707d-2228-49d3-a80a-f297c116fc14" alt="발표 시점 아키텍처" width="600">
 
 1. 전체 아키텍처 설명
     1. 전체 VPC에서 Public 서브넷과 Private 서브넷을 분리하여 사용자가 접근할 수 있는 부분과 DB를 저장할 수 있는 부분으로 아키텍처를 분리
@@ -67,7 +68,8 @@
 
 ## 추가 진행 시점
 
-![6차 아키텍처-페이지-1의 복사본.drawio.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/4e9d85ad-8074-4f91-b465-1351e0948e32/6%EC%B0%A8_%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%ED%8E%98%EC%9D%B4%EC%A7%80-1%EC%9D%98_%EB%B3%B5%EC%82%AC%EB%B3%B8.drawio.png)
+<img src="https://github.com/user-attachments/assets/ab83511d-79d0-4e81-ad7b-999805ac159d" alt="추가 진행 시점 아키텍처" width="600">
+
 
 1. 전체 아키텍처 설명
     1. AWS VPC (10.0.0.0/16) 내에서 Public 서브넷과 Private 서브넷을 명확히 분리하여 보안성을 강화
@@ -102,8 +104,8 @@
 
 - github action + Docker + ECR + Codedeploy를 사용한 방식
     
-    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/9367a398-1331-454b-b8c0-36c3c0b7cda9/image.png)
-    
+    <img src="https://github.com/user-attachments/assets/b140832a-8cbe-40f9-844d-99b7b41ab7d1" alt="CI/CD" width="700">
+
     - github action이 docker 이미지를 생성해 ECR에 업로드, codedeploy 스크립트를 생성해 S3에 업로드
     - S3에 업로드한 스크립트를 codedeploy가 실행하도록 githubaction에서 트리거 전송
     - codedeploy 스크립트 실행 후 배포 진행
@@ -166,43 +168,32 @@
 
 ## API
 
-| 기능명 | URL | Http Method | body |
-| --- | --- | --- | --- |
-| 파일 업로드 | /files | `POST` | file
-directory
-password |
-| 파일 다운로드  | /files/download/{file_id} | `POST` | password |
-| 파일 수정 | /files/{file_id} | `PATCH` | file
-directory
-password |
-| 파일 상세 조회(메타데이터) | /files/detail-meta/{file_id} | `POST` | password |
-| 파일 상세 조회(파일) | /files/detail-file/{file_id} | `POST` | password |
-| 파일 공유링크 | /files/share/{file_id} | `POST` | password |
-| 삭제 | /files/delete/{file_id} | `POST` | password |
+| 기능명                            | URL                                | Http Method | body                          |
+|-----------------------------------|------------------------------------|-------------|-------------------------------|
+| 파일 업로드                       | /files                             | `POST`      | file, directory, password     |
+| 파일 다운로드                    | /files/download/{file_id}           | `POST`      | password                      |
+| 파일 수정                        | /files/{file_id}                    | `PATCH`     | file, directory, password     |
+| 파일 상세 조회(메타데이터)       | /files/detail-meta/{file_id}        | `POST`      | password                      |
+| 파일 상세 조회(파일)             | /files/detail-file/{file_id}        | `POST`      | password                      |
+| 파일 공유링크                    | /files/share/{file_id}              | `POST`      | password                      |
+| 삭제                             | /files/delete/{file_id}             | `POST`      | password                      |
+
 - presigned URL 방식으로 변경한 API
 - 모두 비밀번호가 필요한 API이며, 비밀번호를 form-data로 전달
 
-| 기능명 | URL | Http Method | params |
-| --- | --- | --- | --- |
-| 전체 조회 | /files/all | `GET` |  |
-| 조회(페이지 단위) | /files | `GET` | page
-name
-time |
-| 검색 | /files/search | `GET` | name
-path
-before, after
-type
-page |
-| 로그 조회 | /files/{file_id}/logs | `DELETE` | type
-page
-size |
+| 기능명             | URL                      | Http Method | params                         |
+|--------------------|--------------------------|-------------|--------------------------------|
+| 전체 조회          | /files/all                | `GET`       |                                |
+| 조회(페이지 단위) | /files                    | `GET`       | page, name, time               |
+| 검색               | /files/search             | `GET`       | name, path, before, after, type, page |
+| 로그 조회          | /files/{file_id}/logs     | `DELETE`    | type, page, size               |
 - 비밀번호가 필요없으며, 수정하지 않은 API
 
 # 부하 테스트
 
 ## 파일 업로드 테스트
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/59622d38-796d-4b10-9b32-9e607fefedac/image.png)
+![업로드](https://github.com/user-attachments/assets/f0f5764a-590d-4aef-b967-8d92b7134e90)
 
 - 5명의 사용자가 동시 접속
 - 각 사용자는 3분 동안 계속해서 파일 업로드를 반복 실행
@@ -212,7 +203,7 @@ size |
 
 ## 파일 다운로드 테스트
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/dc2fd199-f1f6-494d-8a87-5d18bcaa667b/image.png)
+![다운로드](https://github.com/user-attachments/assets/022b111a-8f33-407e-be7d-55deb55167ca)
 
 - 2명의 사용자가 동시 접속
 - 각 사용자는 3분 동안 계속해서 파일 다운로드를 반복 실행
@@ -222,7 +213,7 @@ size |
 
 ## 파일 업로드/다운로드 동시 테스트
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/bda4d7f4-1501-4860-8096-2722a272372d/image.png)
+![업로드/다운로드](https://github.com/user-attachments/assets/cbc9d673-f37b-47f5-a66e-cf8c33b2511f)
 
 - 3명의 사용자가 동시 접속
 - 각 사용자는 3분 동안 계속해서 파일 업로드/다운로드를 반복 실행
@@ -233,6 +224,7 @@ size |
 ## 파일 검색 테스트
 
 ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/485a3e47-0f7c-4e76-a68e-5d5a9f3d26fc/image.png)
+![search](https://github.com/user-attachments/assets/ad6b2c60-c54a-42ed-a9c8-91857818f269)
 
 - 2명의 사용자가 동시 접속
 - 각 사용자는 3분 동안 계속해서 검색 반복 실행
@@ -242,7 +234,7 @@ size |
 
 ## 메타데이터 조회 테스트
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/ac76b844-b286-4e63-a704-74afb0a7c3d1/image.png)
+![메타데이터 조회](https://github.com/user-attachments/assets/b9c522f1-010f-4d93-9f12-aa1ab81955ae)
 
 - 1분 동안 사용자가 10명으로 증가 → 5분 동안 사용자가 10명으로 유지 → 1분 동안 사용자가 0명으로 감소
 - 각 사용자는 계속해서 메타데이터 조회 반복 실행
@@ -252,7 +244,7 @@ size |
 
 ## 파일 조회 테스트
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/b782f691-dec6-485a-a6a8-2827dfef2dd5/c3e6970b-a82e-4359-b483-fa44fccf02b6/image.png)
+![파일 조회](https://github.com/user-attachments/assets/e010cb82-fc56-45a7-84c2-102f1152721d)
 
 - 1분 동안 사용자가 5명으로 증가 → 5분 동안 사용자가 5명으로 유지 → 1분 동안 사용자가 0명으로 감소
 - 각 사용자는 계속해서 파일 조회 반복 실행
@@ -262,16 +254,15 @@ size |
 
 ## 부하 테스트 정리
 
-|  | 파일
-업로드 | 파일
-다운로드 | 업로드/
-다운로드 | 파일 검색 | 메타데이터 조회 | 파일 조회 |
-| --- | --- | --- | --- | --- | --- | --- |
-| 테스트
-진행 시간 | 3분 | 3분 | 3분 | 3분 | 7분 | 7분 |
+
+
+| 항목 | 파일 업로드 | 파일 다운로드 | 업로드/ 다운로드 | 파일 검색 | 메타데이터 조회 | 파일 조회 |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| 테스트 진행 시간 | 3분 | 3분 | 3분 | 3분 | 7분 | 7분 |
 | 평균 사용자 | 5명 | 2명 | 3명 | 2명 | 10명 | 10명 |
 | 총 발생 요청 | 45개 | 37개 | 27개 | 351개 | 3133개 | 3133개 |
 | 성공률 | 100% | 75.67% | 86.66% | 100% | 98.65% | 95.45% |
+
 - 매일 약 100-200개의 새로운 파일 업로드 예상
 - 파일 당 평균 크기는 50MB 예상
 
